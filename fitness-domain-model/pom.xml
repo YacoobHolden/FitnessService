@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nz.ac.auckland</groupId>
+	<artifactId>fitness-domain-model</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Fitness Data Model</name>
+
+	<description>Complete domain model for the Fitness application.
+  	This project does not include a Web Service component.</description>
+
+	<dependencies>
+		<!-- Apache Commons is a useful utility library. It is used in this project to implement
+		     methods equals() and hashCode(), to meet their requirements as stated in the Javadoc
+		     pages for class Object (http://docs.oracle.com/javase/6/docs/api/).
+		     
+		     Apache Commons provides a package (org.apache.commons.lang3.builder) that simplifies
+		     the implementation of equals() and hashCode(). See the Javadoc documentation for
+		     details: https://commons.apache.org/proper/commons-lang/javadocs/api-3.4/ -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+		
+		<!-- The Joda Time library provides useful classes for working with dates and time. The
+		     Javadoc for these classes is available at: 
+		     http://www.joda.org/joda-time/apidocs/index.html -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.7</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
