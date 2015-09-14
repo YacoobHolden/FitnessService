@@ -61,6 +61,10 @@ public class Workout {
 		return _name;
 	}
 
+	/*
+	 * DEFAULT SETTERS AND GETTERS
+	 */
+	
 	public String get_name() {
 		return _name;
 	}
@@ -92,6 +96,10 @@ public class Workout {
 	public void set_exercises(Set<Exercise> _exercises) {
 		this._exercises = _exercises;
 	}
+	
+	/*
+	 * END DEFAULT SETTERS AND GETTERS
+	 */
 	
 	public HashSet<String> getExStrings(){
 		HashSet<String> exStrings = new HashSet<String>();
