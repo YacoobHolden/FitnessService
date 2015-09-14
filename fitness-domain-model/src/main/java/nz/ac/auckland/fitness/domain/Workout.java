@@ -30,6 +30,13 @@ public class Workout {
 		_exercises = new HashSet<Exercise>();
 	}
 	
+	public Workout(String name, String description, HashSet<Tag> tags, HashSet<Exercise> exercises) {
+		_name = name;
+		_description = description;
+		_tags = tags;
+		_exercises = exercises;
+	}
+	
 	public void addTag(Tag tag) {
 		_tags.add(tag);
 	}
@@ -101,8 +108,8 @@ public class Workout {
 	 * END DEFAULT SETTERS AND GETTERS
 	 */
 	
-	public HashSet<String> getExStrings(){
-		HashSet<String> exStrings = new HashSet<String>();
+	public Set<String> getExStrings(){
+		Set<String> exStrings = new HashSet<String>();
 		for (Exercise e : _exercises){
 			exStrings.add(e.toString());
 		}

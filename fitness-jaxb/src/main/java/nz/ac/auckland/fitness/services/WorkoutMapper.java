@@ -7,18 +7,20 @@ import nz.ac.auckland.fitness.domain.Workout;
  * Workouts.
  * 
  * @author Jacob Holden
- *
+ * 
  */
 public class WorkoutMapper {
 
 	static Workout toDomainModel(nz.ac.auckland.fitness.dto.Workout dtoWorkout) {
-		Workout fullWorkout = new Workout(dtoWorkout.get_name(),dtoWorkout.get_description());
+		Workout fullWorkout = new Workout(dtoWorkout.get_name(),
+				dtoWorkout.get_description());
 		return fullWorkout;
 	}
-	
+
 	static nz.ac.auckland.fitness.dto.Workout toDto(Workout workout) {
-		nz.ac.auckland.fitness.dto.Workout dtoWorkout = 
-				new nz.ac.auckland.fitness.dto.Workout(workout.get_name(),workout.get_description());
+		nz.ac.auckland.fitness.dto.Workout dtoWorkout = new nz.ac.auckland.fitness.dto.Workout(
+				workout.get_name(), workout.get_description(),
+				workout.get_tags(), workout.getExStrings());
 		return dtoWorkout;
 	}
 }

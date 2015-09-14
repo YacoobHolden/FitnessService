@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import nz.ac.auckland.fitness.domain.Tag;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /*
@@ -24,26 +26,20 @@ public class Workout {
 	private String _description;
 	
 	@XmlElement(name="tags")
-	private Set<String> _tags;
+	private Set<Tag> _tags;
 	
 	@XmlElement(name="exercises")
 	private Set<String> _exercises;
 	
 	protected Workout() {
-		_tags = new HashSet<String>();
+		_tags = new HashSet<Tag>();
 		_exercises = new HashSet<String>();
 	}
 	
-	/**
-	 * Constructs a DTO Workout instance. This method should NOT be called by 
-	 * Web Service clients. It is intended to be used by the Web Service 
-	 * implementation when creating a DTO Workout from a domain-model Workout 
-	 * object.
-	 */
-	public Workout(String name, String description) {
+	public Workout(String name, String description, Set<Tag> tags, Set<String> exercises) {
 		_name = name;
 		_description = description;
-		_tags = new HashSet<String>();
+		_tags = new HashSet<Tag>();
 		_exercises = new HashSet<String>();
 	}
 	
@@ -90,11 +86,11 @@ public class Workout {
 		this._description = _description;
 	}
 
-	public Set<String> get_tags() {
+	public Set<Tag> get_tags() {
 		return _tags;
 	}
 
-	public void set_tags(Set<String> _tags) {
+	public void set_tags(Set<Tag> _tags) {
 		this._tags = _tags;
 	}
 

@@ -28,17 +28,18 @@ public interface FitnessResource {
 	
    @POST
    @Consumes("application/xml")
-   Response createWorkout(InputStream is);
+   @Path("/workouts")
+   Response createWorkout(nz.ac.auckland.fitness.dto.Workout Workout);
 
 
    @GET
-   @Path("{name}")
+   @Path("/workouts/{name}")
    @Produces("application/xml")
    StreamingOutput retrieveWorkout(@PathParam("name") String name);
 
  
    @PUT
-   @Path("{name}")
+   @Path("/workouts/{name}")
    @Consumes("application/xml")
    void updateWorkout(@PathParam("name") String name, InputStream is);
    
@@ -48,17 +49,18 @@ public interface FitnessResource {
 	
   @POST
   @Consumes("application/xml")
+  @Path("/exercises")
   Response createExercise(InputStream is);
 
 
   @GET
-  @Path("{name}")
+  @Path("/exercises/{name}")
   @Produces("application/xml")
   StreamingOutput retrieveExercise(@PathParam("name") String name);
 
 
   @PUT
-  @Path("{name}")
+  @Path("/exercises/{name}")
   @Consumes("application/xml")
   void updateExercise(@PathParam("name") String name, InputStream is);
 }
