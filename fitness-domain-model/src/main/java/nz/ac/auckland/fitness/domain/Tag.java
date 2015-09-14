@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Class used to represent a tag
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Tag {
+public class Tag {
 	
 	@XmlElement(name="text")
 	private String _text;

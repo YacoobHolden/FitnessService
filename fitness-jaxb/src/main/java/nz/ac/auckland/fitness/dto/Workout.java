@@ -1,41 +1,50 @@
-package nz.ac.auckland.fitness.domain;
+package nz.ac.auckland.fitness.dto;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /*
  * Class used to represent a Workout
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Workout {
 	
+	@XmlElement(name="name")
 	private String _name;
 	
+	@XmlElement(name="description")
 	private String _description;
 	
-	private Set<Tag> _tags;
+	@XmlElement(name="tags")
+	private Set<String> _tags;
 	
-	private Set<Exercise> _exercises;
+	@XmlElement(name="exercises")
+	private Set<String> _exercises;
 	
 	protected Workout() {
-		_tags = new HashSet<Tag>();
-		_exercises = new HashSet<Exercise>();
+		_tags = new HashSet<String>();
+		_exercises = new HashSet<String>();
 	}
 	
+	/**
+	 * Constructs a DTO Workout instance. This method should NOT be called by 
+	 * Web Service clients. It is intended to be used by the Web Service 
+	 * implementation when creating a DTO Workout from a domain-model Workout 
+	 * object.
+	 */
 	public Workout(String name, String description) {
 		_name = name;
 		_description = description;
-		_tags = new HashSet<Tag>();
-		_exercises = new HashSet<Exercise>();
-	}
-	
-	public void addTag(Tag tag) {
-		_tags.add(tag);
-	}
-	
-	public void addExercise(Exercise exercise) {
-		_exercises.add(exercise);
+		_tags = new HashSet<String>();
+		_exercises = new HashSet<String>();
 	}
 	
 	@Override
@@ -77,28 +86,20 @@ public class Workout {
 		this._description = _description;
 	}
 
-	public Set<Tag> get_tags() {
+	public Set<String> get_tags() {
 		return _tags;
 	}
 
-	public void set_tags(Set<Tag> _tags) {
+	public void set_tags(Set<String> _tags) {
 		this._tags = _tags;
 	}
 
-	public Set<Exercise> get_exercises() {
+	public Set<String> get_exercises() {
 		return _exercises;
 	}
 
-	public void set_exercises(Set<Exercise> _exercises) {
+	public void set_exercises(Set<String> _exercises) {
 		this._exercises = _exercises;
-	}
-	
-	public HashSet<String> getExStrings(){
-		HashSet<String> exStrings = new HashSet<String>();
-		for (Exercise e : _exercises){
-			exStrings.add(e.toString());
-		}
-		return exStrings;
 	}
 
 }
