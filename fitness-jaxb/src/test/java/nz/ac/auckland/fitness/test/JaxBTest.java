@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.spi.ObjectFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -22,7 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class JaxBTest {
-	
+
 	private static OutputStream os;
 	private static JAXBContext exContext;
 	private static Marshaller exMarshaller;
@@ -30,7 +29,7 @@ public class JaxBTest {
 	private static Marshaller woMarshaller;
 	private static JAXBContext tagContext;
 	private static Marshaller tagMarshaller;
-	
+
 	/**
 	 * One-time setup method that creates a Web service client.
 	 */
@@ -38,65 +37,69 @@ public class JaxBTest {
 	public static void setUpJAXB() {
 		os = new ByteArrayOutputStream();
 		// Setup ex testing stuff
-		exContext = new FitnessResolver().getContext(Exercise.class);
-	    try {
+		exContext = new FitnessResolver().getContext(DistanceExercise.class);
+		try {
 			exMarshaller = exContext.createMarshaller();
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    // Setup wo testing stuff
- 		woContext = new FitnessResolver().getContext(Workout.class);
- 	    try {
- 			woMarshaller = exContext.createMarshaller();
- 		} catch (JAXBException e) {
- 			// TODO Auto-generated catch block
- 			e.printStackTrace();
- 		}
- 	    // Setup wo testing stuff
- 		tagContext = new FitnessResolver().getContext(Tag.class);
- 	    try {
- 			tagMarshaller = exContext.createMarshaller();
- 		} catch (JAXBException e) {
- 			// TODO Auto-generated catch block
- 			e.printStackTrace();
- 		}
+		// Setup wo testing stuff
+		woContext = new FitnessResolver().getContext(Workout.class);
+		try {
+			woMarshaller = woContext.createMarshaller();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Setup wo testing stuff
+		tagContext = new FitnessResolver().getContext(Tag.class);
+		try {
+			tagMarshaller = exContext.createMarshaller();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Test
-	public void testsPass() {}
-	
+	public void testsPass() {
+	}
+
 	@Test
 	public void testsExerciseXML() {
 		// Clear output stream
 		os = new ByteArrayOutputStream();
 		// Do test
-		DistanceExercise distex = new DistanceExercise("Run","Do it",5.0);
+		Exercise distex = new DistanceExercise("Run", "Do it", 5.0);
 		try {
 			exMarshaller.marshal(distex, os);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 		System.out.println(os.toString());
-		assertEquals(os.toString(),"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><exercise><name>Run</name><description>Do it</description></exercise>");
+		assertEquals(
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><distance><name>Run</name><description>Do it</description><distance>5.0</distance></distance>",
+				os.toString());
 	}
-	
+
 	@Test
 	public void testsWorkoutXML() {
 		// Clear output stream
 		os = new ByteArrayOutputStream();
-		// Do test
-		Tag t1 = new Tag("Hardcore");
-		Set<Tag> tagList = new HashSet<Tag>();
-		tagList.add(t1);
-		Set<String> exList = new HashSet<String>();
-		exList.add("Bench Press");
-		Workout wo = new Workout("Chest Day","Work that",tagList,exList);
+		// Make test objects
+		Exercise distex = new DistanceExercise("Run", "Do it", 5.0);
+		Set<Exercise> exList = new HashSet<Exercise>();
+		exList.add(distex);
+		Workout wo = new Workout("Chest Day", "Work that", exList);
 		try {
 			woMarshaller.marshal(wo, os);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 		System.out.println(os.toString());
+		assertEquals(
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workout><id>0</id><name>Chest Day</name><description>Work that</description><exercises><exercise xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"distanceExercise\"><name>Run</name><description>Do it</description><distance>5.0</distance></exercise></exercises></workout>",
+				os.toString());
 	}
 }

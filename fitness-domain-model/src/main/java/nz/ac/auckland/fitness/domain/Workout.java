@@ -10,6 +10,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class Workout {
 	
+	private int _id;
+	
 	private String _name;
 	
 	private String _description;
@@ -23,14 +25,7 @@ public class Workout {
 		_exercises = new HashSet<Exercise>();
 	}
 	
-	public Workout(String name, String description) {
-		_name = name;
-		_description = description;
-		_tags = new HashSet<Tag>();
-		_exercises = new HashSet<Exercise>();
-	}
-	
-	public Workout(String name, String description, HashSet<Tag> tags, HashSet<Exercise> exercises) {
+	public Workout(int id, String name, String description, Set<Tag> tags, Set<Exercise> exercises) {
 		_name = name;
 		_description = description;
 		_tags = tags;
@@ -71,6 +66,13 @@ public class Workout {
 	/*
 	 * DEFAULT SETTERS AND GETTERS
 	 */
+	public int get_id() {
+		return _id;
+	}
+
+	public void set_id(int _id) {
+		this._id = _id;
+	}
 	
 	public String get_name() {
 		return _name;
@@ -107,13 +109,5 @@ public class Workout {
 	/*
 	 * END DEFAULT SETTERS AND GETTERS
 	 */
-	
-	public Set<String> getExStrings(){
-		Set<String> exStrings = new HashSet<String>();
-		for (Exercise e : _exercises){
-			exStrings.add(e.toString());
-		}
-		return exStrings;
-	}
 
 }
