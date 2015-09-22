@@ -62,5 +62,35 @@ public abstract class Exercise {
 	public String toString() {
 		return _name;
 	}
+	
+	/*
+	 * DEFAULT SETTERS AND GETTERS
+	 */
+	public String get_name() {
+		return _name;
+	}
+
+	public void set_name(String _name) {
+		this._name = _name;
+	}
+
+	public String get_description() {
+		return _description;
+	}
+
+	public void set_description(String _description) {
+		this._description = _description;
+	}
+
+	public Set<Tag> get_tags() {
+		return _tags;
+	}
+
+	public void set_tags(Set<Tag> _tags) {
+		this._tags = _tags;
+	}
+	/*
+	 * END DEFAULT SETTERS AND GETTERS
+	 */
 
 }

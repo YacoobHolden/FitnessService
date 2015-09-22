@@ -7,7 +7,7 @@
 	<name>Fitness Web Service with JAXB</name>
 	
 	<properties>
-		<servlet.container.port>10000</servlet.container.port>
+		<servlet.container.port>10001</servlet.container.port>
 	</properties>
 
 	<dependencies>

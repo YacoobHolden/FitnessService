@@ -1,7 +1,14 @@
 package nz.ac.auckland.fitness.test;
 
+import static org.junit.Assert.*;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
+import nz.ac.auckland.fitness.domain.DistanceExercise;
+import nz.ac.auckland.fitness.domain.Exercise;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FitnessTest {
-	private static final String WEB_SERVICE_URI = "http://localhost:10000/services/parolees";
+	private static final String WEB_SERVICE_URI = "http://localhost:10001/services/fitness";
 	private Logger _logger = LoggerFactory.getLogger(FitnessTest.class);
 
 	private static Client _client;
@@ -24,5 +31,29 @@ public class FitnessTest {
 	
 	@Test
 	public void testsPass() {}
+	
+	/**
+	 * Tests that the Web service can create a new Exercise.
+	 */
+	@Test
+	public void addExercise() {
+		Exercise run = new DistanceExercise("Run", "Do it",5.0);
+
+		Response response = _client
+				.target(WEB_SERVICE_URI+"/exercises").request()
+				.post(Entity.xml(run));
+		if (response.getStatus() != 201) {
+			fail("Failed to create new Exercise");
+		}
+
+		String location = response.getLocation().toString();
+		response.close();
+
+		// Query the Web service for the new Exercise.
+		Exercise exFromService = _client.target(location).request()
+				.accept("application/xml").get(Exercise.class);
+
+		assertEquals(run.get_name(), exFromService.get_name());
+	}
 	   
 }

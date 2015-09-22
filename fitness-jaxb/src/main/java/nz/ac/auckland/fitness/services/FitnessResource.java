@@ -50,7 +50,7 @@ public interface FitnessResource {
   @POST
   @Consumes("application/xml")
   @Path("/exercises")
-  Response createExercise(InputStream is);
+  Response createExercise(nz.ac.auckland.fitness.domain.Exercise ex);
 
 
   @GET

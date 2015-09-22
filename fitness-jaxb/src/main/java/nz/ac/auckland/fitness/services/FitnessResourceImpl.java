@@ -46,9 +46,13 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public Response createExercise(InputStream is) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response createExercise(nz.ac.auckland.fitness.domain.Exercise ex) {
+		_logger.debug("Read exercise:: " + ex);
+		_exDB.put(ex.get_name(), ex);
+
+		_logger.debug("Created exercise: " + ex.toString());
+		return Response.created(URI.create("/exercise/" + ex.get_name()))
+				.build();
 	}
 
 	@Override
