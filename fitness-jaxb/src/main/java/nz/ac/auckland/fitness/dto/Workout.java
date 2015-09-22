@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import nz.ac.auckland.fitness.domain.Tag;
@@ -25,10 +26,12 @@ public class Workout {
 	@XmlElement(name="description")
 	private String _description;
 	
-	@XmlElement(name="tags")
+	@XmlElementWrapper(name="tags")
+	@XmlElement(name="tag")
 	private Set<Tag> _tags;
 	
-	@XmlElement(name="exercises")
+	@XmlElementWrapper(name="exercises")
+	@XmlElement(name="exercise")
 	private Set<String> _exercises;
 	
 	protected Workout() {
@@ -39,8 +42,8 @@ public class Workout {
 	public Workout(String name, String description, Set<Tag> tags, Set<String> exercises) {
 		_name = name;
 		_description = description;
-		_tags = new HashSet<Tag>();
-		_exercises = new HashSet<String>();
+		_tags = tags;
+		_exercises = exercises;
 	}
 	
 	@Override
