@@ -17,7 +17,7 @@ public class DistanceExercise extends Exercise{
 	
 	public DistanceExercise() {
 		super();
-	}
+	} 
 	
 	/**
 	 * Constructs a DTO DistanceExercise instance. This method is intended to be called

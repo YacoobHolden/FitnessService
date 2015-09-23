@@ -1,10 +1,12 @@
 package nz.ac.auckland.fitness.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /*
@@ -14,11 +16,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WeightExercise extends Exercise{
 	
-	@XmlElement(name="reps")
+	@XmlElementWrapper(name="reps")
+	@XmlElement(name="rep")
 	private List<Integer> _reps;
 	
-	@XmlElement(name="weights")
+	@XmlElementWrapper(name="weights")
+	@XmlElement(name="weight")
 	private List<Double> _weights;
+	
+	public WeightExercise() {
+		super();
+		_reps = new ArrayList<Integer>();
+		_weights = new ArrayList<Double>();
+	}
 	
 	/**
 	 * Constructs a DTO WeightExercise instance. This method is intended to be called
