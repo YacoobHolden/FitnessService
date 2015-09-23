@@ -5,29 +5,40 @@ import java.util.Set;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
 /*
  * Abstract class used to represent an exercise
  */
 @Entity
 @Inheritance( strategy = InheritanceType.JOINED )
+@Table(name = "EXERCISE")
 public abstract class Exercise {
 	
 	@Id
 	@GeneratedValue(generator = "ID GENERATOR")
+	@Column(name = "ID")
 	private int _id;
 	
-	@Column(unique=true)
+	@Column(name = "NAME", unique=true)
 	private String _name;
 	
+	@Column(name = "DESCRIPTION")
 	private String _description;
 	
+	@ElementCollection 
+	@CollectionTable(
+		name = "TAGS",
+		joinColumns = @JoinColumn(name = "ID") ) @Column(name = "TEXT")
 	private Set<Tag> _tags;
 	
 	public Exercise() {

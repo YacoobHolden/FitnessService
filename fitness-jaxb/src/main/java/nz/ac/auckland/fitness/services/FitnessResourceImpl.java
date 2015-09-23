@@ -40,10 +40,11 @@ public class FitnessResourceImpl implements FitnessResource{
 	public Response createExercise(nz.ac.auckland.fitness.dto.Exercise exDTO) {
 		// First, map to domain model and log
 		Exercise ex = ExerciseMapper.toDomainModel(exDTO);
-		_logger.debug("Read exercise:: " + ex.toString());
+		_logger.debug("Read exercise: " + ex.toString());
 		
 		// Then persist the exercise in the database.
 		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		em.getTransaction().begin();
 		em.persist(ex);
 		em.getTransaction().commit();
 		

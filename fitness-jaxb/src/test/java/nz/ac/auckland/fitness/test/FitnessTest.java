@@ -2,19 +2,13 @@ package nz.ac.auckland.fitness.test;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
-import nz.ac.auckland.fitness.dto.*;
-import nz.ac.auckland.fitness.services.FitnessResolver;
+import nz.ac.auckland.fitness.dto.DistanceExercise;
+import nz.ac.auckland.fitness.dto.Exercise;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

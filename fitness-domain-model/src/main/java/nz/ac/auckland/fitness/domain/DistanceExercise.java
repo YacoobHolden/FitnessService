@@ -1,14 +1,18 @@
 package nz.ac.auckland.fitness.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /*
  * Class used to represent an exercise involving some distance
  */
 
 @Entity
+@Table(name = "DISTANCE_EXERCISE")
 public class DistanceExercise extends Exercise{
 	
+	@Column(name = "DISTANCE")
 	private Double _distance;
 	
 	public DistanceExercise() {
