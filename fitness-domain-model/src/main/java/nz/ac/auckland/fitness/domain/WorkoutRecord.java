@@ -11,20 +11,68 @@ import org.joda.time.LocalDate;
 /*
  * Class used to represent a completed workout
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class WorkoutRecord {
 	
-	@XmlElement(name="person")
+	private int _id;
+	
 	private String _person;
 	
-	@XmlElement(name="workout")
 	private Workout _workout;
 	
-	@XmlElement(name="date")
 	private LocalDate _date;
 	
-	@XmlElement(name="duration")
 	private Duration _duration;
+	
+	public WorkoutRecord(){
+	}
 
+	public WorkoutRecord(int id, String person, Workout workout, LocalDate date, Duration duration){
+		_id = id;
+		_person = person;
+		_workout = workout;
+		_date = date;
+		_duration = duration;
+	}
+
+	// DEFAULT SETTERS AND GETTERS
+	public int get_id() {
+		return _id;
+	}
+
+	public void set_id(int _id) {
+		this._id = _id;
+	}
+
+	public String get_person() {
+		return _person;
+	}
+
+	public void set_person(String _person) {
+		this._person = _person;
+	}
+
+	public Workout get_workout() {
+		return _workout;
+	}
+
+	public void set_workout(Workout _workout) {
+		this._workout = _workout;
+	}
+
+	public LocalDate get_date() {
+		return _date;
+	}
+
+	public void set_date(LocalDate _date) {
+		this._date = _date;
+	}
+
+	public Duration get_duration() {
+		return _duration;
+	}
+
+	public void set_duration(Duration _duration) {
+		this._duration = _duration;
+	}
+	// END DEFAULT SETTERS AND GETTERS
 }

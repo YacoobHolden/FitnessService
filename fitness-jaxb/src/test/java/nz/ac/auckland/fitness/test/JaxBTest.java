@@ -19,10 +19,13 @@ import nz.ac.auckland.fitness.dto.Exercise;
 import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.SetExercise;
 import nz.ac.auckland.fitness.dto.WeightExercise;
+import nz.ac.auckland.fitness.dto.WorkoutRecord;
 import nz.ac.auckland.fitness.domain.Tag;
 import nz.ac.auckland.fitness.dto.Workout;
 import nz.ac.auckland.fitness.services.FitnessResolver;
 
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -41,6 +44,9 @@ public class JaxBTest {
 	private static JAXBContext woContext;
 	private static Marshaller woMarshaller;
 	private static Unmarshaller woUnmarshaller;
+	private static JAXBContext woReContext;
+	private static Marshaller woReMarshaller;
+	private static Unmarshaller woReUnmarshaller;
 
 	/**
 	 * One-time setup method that creates a Web service client.
@@ -80,6 +86,15 @@ public class JaxBTest {
 		try {
 			woMarshaller = woContext.createMarshaller();
 			woUnmarshaller = woContext.createUnmarshaller();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Setup wo testing stuff
+		woReContext = new FitnessResolver().getContext(WorkoutRecord.class);
+		try {
+			woReMarshaller = woReContext.createMarshaller();
+			woReUnmarshaller = woReContext.createUnmarshaller();
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -215,5 +230,33 @@ public class JaxBTest {
 			e.printStackTrace();
 		}
 		assertEquals(unmarshalledWo,wo);
+	}
+	
+	@Test
+	public void testsWorkoutRecordXML() {
+		// Clear output stream
+		os = new ByteArrayOutputStream();
+		// Set up
+		WorkoutRecord worec = new WorkoutRecord("Tom Jones", "Chest Day", new LocalDate(2015, 7, 18), Duration.ZERO);
+		
+		// First, test marshal
+		try {
+			woReMarshaller.marshal(worec, os);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		assertEquals(
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workoutRecord><id>0</id><person>Tom Jones</person><workout_name>Chest Day</workout_name><date>2015-07-18</date><duration>PT0S</duration></workoutRecord>",
+				os.toString());
+		
+		// Then, test unmarshal
+		StringReader reader = new StringReader(os.toString());
+		WorkoutRecord unmarshalledWoRec = null;
+		try {
+			unmarshalledWoRec = (WorkoutRecord) woReUnmarshaller.unmarshal(reader);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		assertEquals(unmarshalledWoRec,worec);
 	}
 }

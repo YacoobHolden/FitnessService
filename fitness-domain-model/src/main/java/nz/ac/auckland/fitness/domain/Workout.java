@@ -63,9 +63,7 @@ public class Workout {
 		return _name;
 	}
 
-	/*
-	 * DEFAULT SETTERS AND GETTERS
-	 */
+	// DEFAULT SETTERS AND GETTERS
 	public int get_id() {
 		return _id;
 	}
