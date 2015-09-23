@@ -1,8 +1,13 @@
 package nz.ac.auckland.fitness.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -11,18 +16,26 @@ import org.joda.time.LocalDate;
  * Class used to represent a completed workout
  */
 @Entity
+@Table(name = "WORKOUT_RECORDS")
 public class WorkoutRecord {
 	
 	@Id
 	@GeneratedValue(generator = "ID GENERATOR")
+	@Column(name = "ID")
 	private int _id;
 	
-	private User _person;
+	@ManyToOne( fetch = FetchType.LAZY ) 
+	@JoinColumn( name = "PERSON_ID", nullable = false )
+	protected User _person;
 	
+	@ManyToOne( fetch = FetchType.LAZY ) 
+	@JoinColumn(name = "WORKOUT_ID", nullable = false)
 	private Workout _workout;
 	
+	@Column(name = "DATE")
 	private LocalDate _date;
 	
+	@Column(name = "DURATION")
 	private Duration _duration;
 	
 	public WorkoutRecord(){

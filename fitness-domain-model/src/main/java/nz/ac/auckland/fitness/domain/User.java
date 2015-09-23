@@ -3,24 +3,31 @@ package nz.ac.auckland.fitness.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /*
  * Class used to represent a web service user
  */
 @Entity
+@Table(name = "USERS")
 public class User {
 	
 	@Id
 	@GeneratedValue(generator = "ID GENERATOR")
+	@Column(name = "ID")
 	private int _id;
 	
-	@Column(unique=true)
+	@Column(name="NAME", unique=true)
 	private String _name;
 	
+	@OneToMany( mappedBy = "_person" , fetch = FetchType.LAZY )
 	private List<WorkoutRecord> _records;
 	
 	public User(int id, String name){

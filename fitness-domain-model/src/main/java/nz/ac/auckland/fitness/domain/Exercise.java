@@ -21,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Inheritance( strategy = InheritanceType.JOINED )
-@Table(name = "EXERCISE")
+@Table(name = "EXERCISES")
 public abstract class Exercise {
 	
 	@Id

@@ -9,7 +9,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "DISTANCE_EXERCISE")
+@Table(name = "DISTANCE_EXERCISES")
 public class DistanceExercise extends Exercise{
 	
 	@Column(name = "DISTANCE")

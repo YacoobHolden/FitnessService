@@ -332,7 +332,6 @@ public class JaxBTest {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
-		System.out.println(os.toString());
 		assertEquals(
 				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><user><id>0</id><name>Mitchell Musso</name><last_record><id>0</id><person_id>0</person_id><workout_id>0</workout_id><date>2015-07-18</date><duration>PT0S</duration></last_record></user>",
 				os.toString());

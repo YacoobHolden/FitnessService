@@ -3,17 +3,31 @@ package nz.ac.auckland.fitness.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 
 /*
  * Class used to represent an exercise involving sets of weights
  */
 
 @Entity
+@Table(name = "WEIGHT_EXERCISES")
 public class WeightExercise extends Exercise{
 
+	@ElementCollection
+	@CollectionTable( name = "WEIGHT_REPS" )
+	@OrderColumn
+	@Column(name = "REP")
 	private List<Integer> _reps;
 
+	@ElementCollection
+	@CollectionTable( name = "WEIGHTS" )
+	@OrderColumn
+	@Column(name = "WEIGHT")
 	private List<Double> _weights;
 	
 	public WeightExercise() {

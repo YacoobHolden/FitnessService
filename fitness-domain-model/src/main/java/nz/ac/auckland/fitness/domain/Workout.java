@@ -3,10 +3,14 @@ package nz.ac.auckland.fitness.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -15,19 +19,30 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 
 @Entity
+@Table(name = "WORKOUTS")
 public class Workout {
 	
 	@Id
 	@GeneratedValue(generator = "ID GENERATOR")
+	@Column(name = "ID")
 	private int _id;
 	
-	@Column(unique=true)
+	@Column(name = "NAME", unique=true)
 	private String _name;
 	
+	@Column(name = "DESCRIPTION")
 	private String _description;
 	
+	@ElementCollection 
+	@CollectionTable(
+		name = "TAGS",
+		joinColumns = @JoinColumn(name = "ID") ) @Column(name = "TEXT")
 	private Set<Tag> _tags;
 	
+	@ElementCollection 
+	@CollectionTable(
+		name = "WORKOUT_EXERCISES",
+		joinColumns = @JoinColumn(name = "ID") )
 	private Set<Exercise> _exercises;
 	
 	protected Workout() {
