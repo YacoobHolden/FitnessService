@@ -21,7 +21,7 @@ public class WeightExercise extends Exercise{
 	public WeightExercise(int id, String name, String description, List<Integer> reps, List<Double> weights) {
 		super(id, name, description);
 		_reps = reps;
-		_weights = weights;
+		_weights = weights; 
 	}
 	
 	public void addSet(int rep, double weight) {

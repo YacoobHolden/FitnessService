@@ -23,6 +23,7 @@ import nz.ac.auckland.fitness.dto.WorkoutRecord;
 import nz.ac.auckland.fitness.domain.Tag;
 import nz.ac.auckland.fitness.dto.Workout;
 import nz.ac.auckland.fitness.services.FitnessResolver;
+import nz.ac.auckland.fitness.services.WorkoutMapper;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -210,6 +211,44 @@ public class JaxBTest {
 		Set<Exercise> exList = new HashSet<Exercise>();
 		exList.add(distex);
 		Workout wo = new Workout("Chest Day", "Work that", exList);
+		
+		// First, test marshal
+		try {
+			woMarshaller.marshal(wo, os);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		assertEquals(
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workout><id>0</id><name>Chest Day</name><description>Work that</description><exercises><exercise xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"distanceExercise\"><id>0</id><name>Run</name><description>Do it</description><distance>5.0</distance></exercise></exercises></workout>",
+				os.toString());
+		
+		// Then, test unmarshal
+		StringReader reader = new StringReader(os.toString());
+		Workout unmarshalledWo = null;
+		try {
+			unmarshalledWo = (Workout) woUnmarshaller.unmarshal(reader);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		assertEquals(unmarshalledWo,wo);
+	}
+	
+	@Test
+	public void testsWorkoutMapping() {
+		// Clear output stream
+		os = new ByteArrayOutputStream();
+		// Set up
+		nz.ac.auckland.fitness.domain.Exercise distex = new nz.ac.auckland.fitness.domain.DistanceExercise(0,"Run", "Do it", 5.0);
+		Set<nz.ac.auckland.fitness.domain.Exercise> exList = new HashSet<nz.ac.auckland.fitness.domain.Exercise>();
+		exList.add(distex);
+		
+		Tag t1 = new Tag("Running");
+		Set<Tag> tagList = new HashSet<Tag>();
+		tagList.add(t1);
+		nz.ac.auckland.fitness.domain.Workout woMap = new nz.ac.auckland.fitness.domain.Workout(0, "Chest Day", "Work that", tagList, exList);
+		
+		// Then try to map to DTO workout
+		Workout wo = WorkoutMapper.toDto(woMap);
 		
 		// First, test marshal
 		try {

@@ -30,7 +30,7 @@ public class WorkoutRecord {
 	@XmlElement(name = "duration")
 	private Duration _duration;
 
-	public WorkoutRecord() {
+	protected WorkoutRecord() {
 	}
 
 	/**

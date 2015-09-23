@@ -28,7 +28,7 @@ public class WorkoutMapper {
 		return fullWorkout;
 	}
 
-	static nz.ac.auckland.fitness.dto.Workout toDto(Workout workout) {
+	public static nz.ac.auckland.fitness.dto.Workout toDto(Workout workout) {
 		// First map the exercises
 		HashSet<nz.ac.auckland.fitness.dto.Exercise> mappedExs = new HashSet<nz.ac.auckland.fitness.dto.Exercise>();
 		for (Exercise ex : workout.get_exercises()){
