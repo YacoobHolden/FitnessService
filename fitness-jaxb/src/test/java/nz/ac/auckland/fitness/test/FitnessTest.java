@@ -2,13 +2,19 @@ package nz.ac.auckland.fitness.test;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
-import nz.ac.auckland.fitness.domain.DistanceExercise;
-import nz.ac.auckland.fitness.domain.Exercise;
+import nz.ac.auckland.fitness.dto.*;
+import nz.ac.auckland.fitness.services.FitnessResolver;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,26 +38,45 @@ public class FitnessTest {
 	@Test
 	public void testsPass() {}
 	
-	/**
+	/*
 	@Test
 	public void addExercise() {
+		JAXBContext distExContext = new FitnessResolver().getContext(DistanceExercise.class);
+		Marshaller distExMarshaller = null;
+		
+		try {
+			distExMarshaller = distExContext.createMarshaller();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		OutputStream os = new ByteArrayOutputStream();
+		
 		Exercise run = new DistanceExercise("Run", "Do it",5.0);
+		try {
+			distExMarshaller.marshal(run, os);
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String runXML = os.toString();
 
 		Response response = _client
 				.target(WEB_SERVICE_URI+"/exercises").request()
-				.post(Entity.xml(run));
+				.post(Entity.xml(runXML));
 		if (response.getStatus() != 201) {
 			fail("Failed to create new Exercise");
 		}
 
 		String location = response.getLocation().toString();
 		response.close();
-
+		
 		// Query the Web service for the new Exercise.
 		Exercise exFromService = _client.target(location).request()
 				.accept("application/xml").get(Exercise.class);
 
 		assertEquals(run.get_name(), exFromService.get_name());
+
 	}*/
 	   
 }

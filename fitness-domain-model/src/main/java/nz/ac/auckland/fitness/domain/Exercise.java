@@ -3,21 +3,27 @@ package nz.ac.auckland.fitness.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 /*
  * Abstract class used to represent an exercise
  */
+@Entity
+@Inheritance( strategy = InheritanceType.JOINED )
 public abstract class Exercise {
 	
+	@Id
+	@GeneratedValue(generator = "ID GENERATOR")
 	private int _id;
 	
+	@Column(unique=true)
 	private String _name;
 	
 	private String _description;

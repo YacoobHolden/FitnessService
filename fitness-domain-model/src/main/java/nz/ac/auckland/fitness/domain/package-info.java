@@ -5,6 +5,10 @@
         value=DurationAdapter.class)
 })
 
+@org.hibernate.annotations.GenericGenerator( name = "ID GENERATOR",
+strategy = "enhanced-sequence"
+)
+
 package nz.ac.auckland.fitness.domain;
  
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

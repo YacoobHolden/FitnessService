@@ -3,15 +3,25 @@ package nz.ac.auckland.fitness.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /*
  * Class used to represent a Workout
  */
+
+@Entity
 public class Workout {
 	
+	@Id
+	@GeneratedValue(generator = "ID GENERATOR")
 	private int _id;
 	
+	@Column(unique=true)
 	private String _name;
 	
 	private String _description;

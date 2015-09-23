@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import nz.ac.auckland.fitness.dto.*;
+
 /**
  * Service interface for the Fitness application. This interface allows 
  * Workouts and Exercises to be created, queried (by name) and updated.
@@ -29,7 +31,7 @@ public interface FitnessResource {
    @POST
    @Consumes("application/xml")
    @Path("/workouts")
-   Response createWorkout(nz.ac.auckland.fitness.dto.Workout Workout);
+   Response createWorkout(Workout Workout);
 
 
    @GET
@@ -50,7 +52,7 @@ public interface FitnessResource {
   @POST
   @Consumes("application/xml")
   @Path("/exercises")
-  Response createExercise(nz.ac.auckland.fitness.domain.Exercise ex);
+  Response createExercise(Exercise ex);
 
 
   @GET

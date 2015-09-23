@@ -3,9 +3,13 @@ package nz.ac.auckland.fitness.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+
 /*
  * Class used to represent an exercise involving sets of weights
  */
+
+@Entity
 public class WeightExercise extends Exercise{
 
 	private List<Integer> _reps;

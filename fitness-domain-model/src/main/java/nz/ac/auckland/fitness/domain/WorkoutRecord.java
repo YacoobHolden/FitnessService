@@ -1,9 +1,8 @@
 package nz.ac.auckland.fitness.domain;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -11,8 +10,11 @@ import org.joda.time.LocalDate;
 /*
  * Class used to represent a completed workout
  */
+@Entity
 public class WorkoutRecord {
 	
+	@Id
+	@GeneratedValue(generator = "ID GENERATOR")
 	private int _id;
 	
 	private String _person;

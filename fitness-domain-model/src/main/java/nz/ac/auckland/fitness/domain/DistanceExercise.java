@@ -1,8 +1,12 @@
 package nz.ac.auckland.fitness.domain;
 
+import javax.persistence.Entity;
+
 /*
  * Class used to represent an exercise involving some distance
  */
+
+@Entity
 public class DistanceExercise extends Exercise{
 	
 	private Double _distance;
