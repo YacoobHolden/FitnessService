@@ -38,32 +38,13 @@ public class FitnessTest {
 	@Test
 	public void testsPass() {}
 	
-	/*
 	@Test
 	public void addExercise() {
-		JAXBContext distExContext = new FitnessResolver().getContext(DistanceExercise.class);
-		Marshaller distExMarshaller = null;
-		
-		try {
-			distExMarshaller = distExContext.createMarshaller();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		OutputStream os = new ByteArrayOutputStream();
-		
 		Exercise run = new DistanceExercise("Run", "Do it",5.0);
-		try {
-			distExMarshaller.marshal(run, os);
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String runXML = os.toString();
 
 		Response response = _client
 				.target(WEB_SERVICE_URI+"/exercises").request()
-				.post(Entity.xml(runXML));
+				.post(Entity.xml(run));
 		if (response.getStatus() != 201) {
 			fail("Failed to create new Exercise");
 		}
@@ -72,11 +53,11 @@ public class FitnessTest {
 		response.close();
 		
 		// Query the Web service for the new Exercise.
+		/*
 		Exercise exFromService = _client.target(location).request()
 				.accept("application/xml").get(Exercise.class);
 
-		assertEquals(run.get_name(), exFromService.get_name());
-
-	}*/
+		assertEquals(run.get_name(), exFromService.get_name())*/
+	}
 	   
 }

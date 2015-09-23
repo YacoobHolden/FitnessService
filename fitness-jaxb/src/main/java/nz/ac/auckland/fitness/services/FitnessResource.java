@@ -12,7 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import nz.ac.auckland.fitness.dto.*;
+import nz.ac.auckland.fitness.dto.Exercise;
+import nz.ac.auckland.fitness.dto.Workout;
 
 /**
  * Service interface for the Fitness application. This interface allows 
@@ -31,6 +32,7 @@ public interface FitnessResource {
    @POST
    @Consumes("application/xml")
    @Path("/workouts")
+   @Produces("application/xml")
    Response createWorkout(Workout Workout);
 
 
