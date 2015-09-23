@@ -11,8 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import nz.ac.auckland.fitness.domain.DistanceExercise;
-import nz.ac.auckland.fitness.domain.Exercise;
+import nz.ac.auckland.fitness.dto.Exercise;
+import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.domain.Tag;
 import nz.ac.auckland.fitness.dto.Workout;
 import nz.ac.auckland.fitness.services.FitnessResolver;
@@ -27,8 +27,6 @@ public class JaxBTest {
 	private static Marshaller exMarshaller;
 	private static JAXBContext woContext;
 	private static Marshaller woMarshaller;
-	private static JAXBContext tagContext;
-	private static Marshaller tagMarshaller;
 
 	/**
 	 * One-time setup method that creates a Web service client.
@@ -52,14 +50,6 @@ public class JaxBTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// Setup wo testing stuff
-		tagContext = new FitnessResolver().getContext(Tag.class);
-		try {
-			tagMarshaller = exContext.createMarshaller();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Test
@@ -79,7 +69,7 @@ public class JaxBTest {
 		}
 		System.out.println(os.toString());
 		assertEquals(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><distance><name>Run</name><description>Do it</description><distance>5.0</distance></distance>",
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><distance_exercise><id>0</id><name>Run</name><description>Do it</description><distance>5.0</distance></distance_exercise>",
 				os.toString());
 	}
 
@@ -99,7 +89,7 @@ public class JaxBTest {
 		}
 		System.out.println(os.toString());
 		assertEquals(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workout><id>0</id><name>Chest Day</name><description>Work that</description><exercises><exercise xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"distanceExercise\"><name>Run</name><description>Do it</description><distance>5.0</distance></exercise></exercises></workout>",
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workout><id>0</id><name>Chest Day</name><description>Work that</description><exercises><exercise xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"distanceExercise\"><id>0</id><name>Run</name><description>Do it</description><distance>5.0</distance></exercise></exercises></workout>",
 				os.toString());
 	}
 }

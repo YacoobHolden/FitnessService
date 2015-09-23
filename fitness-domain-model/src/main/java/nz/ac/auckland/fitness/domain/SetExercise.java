@@ -3,16 +3,11 @@ package nz.ac.auckland.fitness.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 /*
  * Class used to represent an exercise involving sets
  */
-@XmlType(name="2")
 public class SetExercise extends Exercise{
-	@XmlElement(name="reps")
+	
 	private List<Integer> _reps;
 	
 	public SetExercise() {
@@ -20,12 +15,22 @@ public class SetExercise extends Exercise{
 		_reps = new ArrayList<Integer>();
 	}
 	
-	public SetExercise(String name, String description) {
-		super(name, description);
-		_reps = new ArrayList<Integer>();
+	public SetExercise(int id, String name, String description, List<Integer> reps) {
+		super(id,name, description);
+		_reps = reps;
 	}
 	
 	public void addSet(int rep) {
 		_reps.add(rep);
 	}
+
+	// DEFAULT SETTERS AND GETTERS
+	public List<Integer> get_reps() {
+		return _reps;
+	}
+
+	public void set_reps(List<Integer> _reps) {
+		this._reps = _reps;
+	}
+	// END DEFAULT SETTERS AND GETTERS
 }

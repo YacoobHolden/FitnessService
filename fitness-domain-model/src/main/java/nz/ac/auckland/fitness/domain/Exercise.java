@@ -14,23 +14,22 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /*
  * Abstract class used to represent an exercise
  */
-@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Exercise {
 	
-	@XmlElement(name="name")
+	private int _id;
+	
 	private String _name;
 	
-	@XmlElement(name="description")
 	private String _description;
 	
-	@XmlElement(name="tags")
 	private Set<Tag> _tags;
 	
 	public Exercise() {
 		_tags = new HashSet<Tag>();
 	}
 	
-	public Exercise(String name, String description) {
+	public Exercise(int id, String name, String description) {
+		_id = id;
 		_name = name;
 		_description = description;
 		_tags = new HashSet<Tag>();
@@ -63,9 +62,15 @@ public abstract class Exercise {
 		return _name;
 	}
 	
-	/*
-	 * DEFAULT SETTERS AND GETTERS
-	 */
+	// DEFAULT SETTERS AND GETTERS
+	public int get_id() {
+		return _id;
+	}
+
+	public void set_id(int _id) {
+		this._id = _id;
+	}
+	
 	public String get_name() {
 		return _name;
 	}
@@ -89,8 +94,6 @@ public abstract class Exercise {
 	public void set_tags(Set<Tag> _tags) {
 		this._tags = _tags;
 	}
-	/*
-	 * END DEFAULT SETTERS AND GETTERS
-	 */
+	// END DEFAULT SETTERS AND GETTERS
 
 }

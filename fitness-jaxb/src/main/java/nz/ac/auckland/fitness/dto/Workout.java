@@ -9,13 +9,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import nz.ac.auckland.fitness.domain.Exercise;
-import nz.ac.auckland.fitness.domain.Tag;
+import nz.ac.auckland.fitness.dto.Exercise;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /*
- * Class used to represent a Workout DTO
+ * DTO Class used to represent a Workout
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

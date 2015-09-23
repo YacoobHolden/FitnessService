@@ -4,8 +4,8 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import nz.ac.auckland.fitness.domain.DistanceExercise;
-import nz.ac.auckland.fitness.domain.Exercise;
+import nz.ac.auckland.fitness.dto.DistanceExercise;
+import nz.ac.auckland.fitness.dto.Exercise;
 import nz.ac.auckland.fitness.domain.Tag;
 import nz.ac.auckland.fitness.dto.Workout;
 

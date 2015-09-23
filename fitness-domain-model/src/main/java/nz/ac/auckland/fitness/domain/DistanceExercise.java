@@ -1,28 +1,29 @@
 package nz.ac.auckland.fitness.domain;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 /*
  * Class used to represent an exercise involving some distance
  */
-@XmlRootElement(name="distance")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class DistanceExercise extends Exercise{
 	
-	@XmlElement(name="distance")
 	private Double _distance;
 	
 	public DistanceExercise() {
 		super();
 	}
 	
-	public DistanceExercise(String name, String description, double distance) {
-		super(name, description);
+	public DistanceExercise(int id, String name, String description, double distance) {
+		super(id,name, description);
 		_distance = distance;
 	}
+	
+	// DEFAULT SETTERS AND GETTERS
+	public Double get_distance() {
+		return _distance;
+	}
+
+	public void set_distance(Double _distance) {
+		this._distance = _distance;
+	}
+	// END DEFAULT SETTERS AND GETTERS
 	
 }

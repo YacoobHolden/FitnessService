@@ -3,19 +3,19 @@ package nz.ac.auckland.fitness.dto;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /*
- * Abstract class used to represent an exercise
+ * Abstract DTO class used to represent an exercise
  */
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name="abstract_exercise")
 public abstract class Exercise {
 	
 	@XmlElement(name="id")
-	private String _id;
+	private int _id;
 	
 	@XmlElement(name="name")
 	private String _name;
@@ -26,7 +26,8 @@ public abstract class Exercise {
 	public Exercise() {
 	}
 	
-	public Exercise(String name, String description) {
+	public Exercise(int id, String name, String description) {
+		_id = id;
 		_name = name;
 		_description = description;
 	}
@@ -54,6 +55,15 @@ public abstract class Exercise {
 		return _name;
 	}
 	
+	// DEFAULT SETTERS AND GETTERS
+	public int get_id() {
+		return _id;
+	}
+
+	public void set_id(int _id) {
+		this._id = _id;
+	}
+	
 	public String get_name() {
 		return _name;
 	}
@@ -69,5 +79,6 @@ public abstract class Exercise {
 	public void set_description(String _description) {
 		this._description = _description;
 	}
+	// END DEFAULT SETTERS AND GETTERS
 
 }
