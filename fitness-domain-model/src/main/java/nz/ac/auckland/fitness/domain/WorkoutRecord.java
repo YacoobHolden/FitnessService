@@ -17,7 +17,7 @@ public class WorkoutRecord {
 	@GeneratedValue(generator = "ID GENERATOR")
 	private int _id;
 	
-	private String _person;
+	private User _person;
 	
 	private Workout _workout;
 	
@@ -28,7 +28,7 @@ public class WorkoutRecord {
 	public WorkoutRecord(){
 	}
 
-	public WorkoutRecord(int id, String person, Workout workout, LocalDate date, Duration duration){
+	public WorkoutRecord(int id, User person, Workout workout, LocalDate date, Duration duration){
 		_id = id;
 		_person = person;
 		_workout = workout;
@@ -45,11 +45,11 @@ public class WorkoutRecord {
 		this._id = _id;
 	}
 
-	public String get_person() {
+	public User get_person() {
 		return _person;
 	}
 
-	public void set_person(String _person) {
+	public void set_person(User _person) {
 		this._person = _person;
 	}
 

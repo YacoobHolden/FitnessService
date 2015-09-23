@@ -18,6 +18,7 @@ import javax.xml.bind.Unmarshaller;
 import nz.ac.auckland.fitness.dto.Exercise;
 import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.SetExercise;
+import nz.ac.auckland.fitness.dto.User;
 import nz.ac.auckland.fitness.dto.WeightExercise;
 import nz.ac.auckland.fitness.dto.WorkoutRecord;
 import nz.ac.auckland.fitness.domain.Tag;
@@ -33,21 +34,30 @@ import org.junit.Test;
 public class JaxBTest {
 
 	private static OutputStream os;
+	// DistanceExercise
 	private static JAXBContext distExContext;
 	private static Marshaller distExMarshaller;
 	private static Unmarshaller distExUnmarshaller;
+	// WeightExercise
 	private static JAXBContext weightExContext;
 	private static Marshaller weightExMarshaller;
 	private static Unmarshaller weightExUnmarshaller;
+	// SetExercise
 	private static JAXBContext setExContext;
 	private static Marshaller setExMarshaller;
 	private static Unmarshaller setExUnmarshaller;
+	// Workout
 	private static JAXBContext woContext;
 	private static Marshaller woMarshaller;
 	private static Unmarshaller woUnmarshaller;
+	// WorkoutRecord
 	private static JAXBContext woReContext;
 	private static Marshaller woReMarshaller;
 	private static Unmarshaller woReUnmarshaller;
+	// User
+	private static JAXBContext usrContext;
+	private static Marshaller usrMarshaller;
+	private static Unmarshaller usrUnmarshaller;
 
 	/**
 	 * One-time setup method that creates a Web service client.
@@ -91,11 +101,20 @@ public class JaxBTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// Setup wo testing stuff
+		// Setup woRecord testing stuff
 		woReContext = new FitnessResolver().getContext(WorkoutRecord.class);
 		try {
 			woReMarshaller = woReContext.createMarshaller();
 			woReUnmarshaller = woReContext.createUnmarshaller();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Setup usr testing stuff
+		usrContext = new FitnessResolver().getContext(User.class);
+		try {
+			usrMarshaller = woReContext.createMarshaller();
+			usrUnmarshaller = woReContext.createUnmarshaller();
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -276,7 +295,7 @@ public class JaxBTest {
 		// Clear output stream
 		os = new ByteArrayOutputStream();
 		// Set up
-		WorkoutRecord worec = new WorkoutRecord("Tom Jones", "Chest Day", new LocalDate(2015, 7, 18), Duration.ZERO);
+		WorkoutRecord worec = new WorkoutRecord(0, 0, new LocalDate(2015, 7, 18), Duration.ZERO);
 		
 		// First, test marshal
 		try {
@@ -285,7 +304,7 @@ public class JaxBTest {
 			e.printStackTrace();
 		}
 		assertEquals(
-				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workoutRecord><id>0</id><person>Tom Jones</person><workout_name>Chest Day</workout_name><date>2015-07-18</date><duration>PT0S</duration></workoutRecord>",
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workoutRecord><id>0</id><person_id>0</person_id><workout_id>0</workout_id><date>2015-07-18</date><duration>PT0S</duration></workoutRecord>",
 				os.toString());
 		
 		// Then, test unmarshal
@@ -297,5 +316,35 @@ public class JaxBTest {
 			e.printStackTrace();
 		}
 		assertEquals(unmarshalledWoRec,worec);
+	}
+	
+	@Test
+	public void testsUserXML() {
+		// Clear output stream
+		os = new ByteArrayOutputStream();
+		// Set up
+		WorkoutRecord worec = new WorkoutRecord(0, 0, new LocalDate(2015, 7, 18), Duration.ZERO);
+		User usr = new User("Mitchell Musso",worec);
+		
+		// First, test marshal
+		try {
+			usrMarshaller.marshal(usr, os);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		System.out.println(os.toString());
+		assertEquals(
+				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><user><id>0</id><name>Mitchell Musso</name><last_record><id>0</id><person_id>0</person_id><workout_id>0</workout_id><date>2015-07-18</date><duration>PT0S</duration></last_record></user>",
+				os.toString());
+		
+		// Then, test unmarshal
+		StringReader reader = new StringReader(os.toString());
+		User unmarshalledUsr = null;
+		try {
+			unmarshalledUsr = (User) usrUnmarshaller.unmarshal(reader);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		assertEquals(unmarshalledUsr,usr);
 	}
 }
