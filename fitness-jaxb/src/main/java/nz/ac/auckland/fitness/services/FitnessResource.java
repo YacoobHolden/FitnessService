@@ -38,7 +38,7 @@ public interface FitnessResource {
 	@Consumes("application/xml")
 	@Path("/workouts")
 	@Produces("application/xml")
-	Response createWorkout(Workout Workout);
+	Response createWorkout(Workout workoutDTO);
 
 	@GET
 	@Path("/workouts/")
@@ -54,7 +54,7 @@ public interface FitnessResource {
 	@PUT
 	@Path("/workouts/{id}")
 	@Consumes("application/xml")
-	void updateWorkout(@PathParam("id") int id, Workout workout);
+	void updateWorkout(@PathParam("id") int id, Workout workoutDTO);
 
 	@DELETE
 	@Path("/workouts/{id}")
@@ -70,7 +70,7 @@ public interface FitnessResource {
 	@POST
 	@Path("/workouts/{id}/tags")
 	@Consumes("application/xml")
-	void createWorkoutTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response createWorkoutTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
 	
 	@PUT
 	@Path("/workouts/{id}/tags")
@@ -96,7 +96,7 @@ public interface FitnessResource {
 	@PUT
 	@Path("/exercises/{id}")
 	@Consumes("application/xml")
-	void updateExercise(@PathParam("id") int id, Exercise ex);
+	void updateExercise(@PathParam("id") int id, Exercise exDTO);
 	
 	// workouts/{id}/tags
 	@GET
@@ -107,7 +107,7 @@ public interface FitnessResource {
 	@POST
 	@Path("/exercises/{id}/tags")
 	@Consumes("application/xml")
-	void createExerciseTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response createExerciseTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
 	
 	@PUT
 	@Path("/exercises/{id}/tags")
@@ -123,7 +123,7 @@ public interface FitnessResource {
 	@Path("/users")
 	@Consumes("application/xml")
 	@Produces("application/xml")
-	void createUser(User u);
+	Response createUser(User u);
 	
 	// users/{id}
 	@GET
@@ -152,7 +152,7 @@ public interface FitnessResource {
 	@POST
 	@Path("/users/{id}/records")
 	@Produces("application/xml")
-	StreamingOutput retrieveWorkoutRecord(@PathParam("id") int id);
+	WorkoutRecord retrieveWorkoutRecord(@PathParam("id") int id);
 	
 	// users/{id}/records/{rid}
 	@GET

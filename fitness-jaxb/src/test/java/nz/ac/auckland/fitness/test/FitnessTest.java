@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.Exercise;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -29,12 +30,20 @@ public class FitnessTest {
 		_client = ClientBuilder.newClient();
 	}
 	
+	/**
+	 * One-time tear-down method that tears down a Web service client.
+	 */
+	@AfterClass
+	public static void teardownClient() {
+		_client.close();
+	}
+	
 	@Test
 	public void testsPass() {}
 	
 	@Test
 	public void addExercise() {
-		Exercise run = new DistanceExercise("Run", "Do it",5.0);
+		Exercise run = new DistanceExercise("Magical", "Units in KM",5.0);
 
 		Response response = _client
 				.target(WEB_SERVICE_URI+"/exercises").request()
@@ -47,11 +56,9 @@ public class FitnessTest {
 		response.close();
 		
 		// Query the Web service for the new Exercise.
-		/*
-		Exercise exFromService = _client.target(location).request()
-				.accept("application/xml").get(Exercise.class);
+		Exercise exFromService = _client.target(WEB_SERVICE_URI+"/exercises/2").request().get(Exercise.class);
 
-		assertEquals(run.get_name(), exFromService.get_name())*/
+		assertEquals(run.get_name(), exFromService.get_name());
 	}
 	   
 }
