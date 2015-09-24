@@ -37,7 +37,7 @@ public abstract class Exercise {
 	
 	@ElementCollection 
 	@CollectionTable(
-		name = "TAGS",
+		name = "EXERCISE_TAGS",
 		joinColumns = @JoinColumn(name = "ID") ) @Column(name = "TEXT")
 	private Set<Tag> _tags;
 	

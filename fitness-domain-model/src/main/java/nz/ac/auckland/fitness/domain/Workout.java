@@ -35,7 +35,7 @@ public class Workout {
 	
 	@ElementCollection 
 	@CollectionTable(
-		name = "TAGS",
+		name = "WORKOUT_TAGS",
 		joinColumns = @JoinColumn(name = "ID") ) @Column(name = "TEXT")
 	private Set<Tag> _tags;
 	
