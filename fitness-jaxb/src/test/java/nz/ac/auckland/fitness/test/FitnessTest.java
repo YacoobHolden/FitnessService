@@ -2,6 +2,15 @@ package nz.ac.auckland.fitness.test;
 
 import static org.junit.Assert.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -11,14 +20,19 @@ import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.Exercise;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FitnessTest {
+	// JDBC connection to the database.
+	private static Connection _jdbcConnection = null;
+	
 	private static final String WEB_SERVICE_URI = "http://localhost:10001/services/fitness";
-	private Logger _logger = LoggerFactory.getLogger(FitnessTest.class);
+	
+	private static Logger _logger = LoggerFactory.getLogger(FitnessTest.class);
 
 	private static Client _client;
 
@@ -26,13 +40,10 @@ public class FitnessTest {
 	 * One-time setup method that creates a Web service client.
 	 */
 	@BeforeClass
-	public static void setUpClient() {
+	public static void setUpClient() throws ClassNotFoundException, SQLException{
 		_client = ClientBuilder.newClient();
 	}
 	
-	/**
-	 * One-time tear-down method that tears down a Web service client.
-	 */
 	@AfterClass
 	public static void teardownClient() {
 		_client.close();
@@ -43,7 +54,7 @@ public class FitnessTest {
 	
 	@Test
 	public void addExercise() {
-		Exercise run = new DistanceExercise("Magical", "Units in KM",5.0);
+		Exercise run = new DistanceExercise("Magicallys", "Units in KM",5.0);
 
 		Response response = _client
 				.target(WEB_SERVICE_URI+"/exercises").request()
@@ -55,8 +66,8 @@ public class FitnessTest {
 		String location = response.getLocation().toString();
 		response.close();
 		
-		// Query the Web service for the new Exercise.
-		Exercise exFromService = _client.target(WEB_SERVICE_URI+"/exercises/2").request().get(Exercise.class);
+		Exercise exFromService = null;
+		exFromService = _client.target(location).request().get(Exercise.class);
 
 		assertEquals(run.get_name(), exFromService.get_name());
 	}

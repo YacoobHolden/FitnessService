@@ -38,7 +38,7 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.persist(wo);
 			em.getTransaction().commit();
 			
-			return Response.created(URI.create("/workouts/" + wo.get_id()))
+			return Response.created(URI.create("/fitness/workouts/" + wo.get_id()))
 					.build();
 		}
 		else {
@@ -113,7 +113,7 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.persist(ex);
 			em.getTransaction().commit();
 			
-			return Response.created(URI.create("/exercises/" + ex.get_id()))
+			return Response.created(URI.create("/fitness/exercises/" + ex.get_id()))
 					.build();
 		}
 		else {
@@ -124,7 +124,6 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public nz.ac.auckland.fitness.dto.Exercise retrieveExercise(int id) {
-		System.out.println("ID IS " + id);
 		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Exercise ex = null;
 		try {
@@ -134,8 +133,8 @@ public class FitnessResourceImpl implements FitnessResource{
 				).setParameter("id", id);
 			ex = query.getSingleResult();
 		} catch(NoResultException e) {
-			// Workout doesn't exist in the database
-			throw new WebApplicationException(404);
+			// Exercise doesn't exist in the database
+			throw new WebApplicationException("Could not find exercise with id: "+id,404);
 		}
 		return ExerciseMapper.toDto(ex);
 	}
