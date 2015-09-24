@@ -54,7 +54,7 @@ public interface FitnessResource {
 	@PUT
 	@Path("/workouts/{id}")
 	@Consumes("application/xml")
-	void updateWorkout(@PathParam("id") int id, Workout workoutDTO);
+	Response updateWorkout(@PathParam("id") int id, Workout workoutDTO);
 
 	@DELETE
 	@Path("/workouts/{id}")
@@ -75,7 +75,7 @@ public interface FitnessResource {
 	@PUT
 	@Path("/workouts/{id}/tags")
 	@Consumes("application/xml")
-	void updateWorkoutTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response updateWorkoutTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
 
 	/*
 	 * EXERCISE SECTION
@@ -96,7 +96,7 @@ public interface FitnessResource {
 	@PUT
 	@Path("/exercises/{id}")
 	@Consumes("application/xml")
-	void updateExercise(@PathParam("id") int id, Exercise exDTO);
+	Response updateExercise(@PathParam("id") int id, Exercise exDTO);
 	
 	// workouts/{id}/tags
 	@GET
@@ -112,7 +112,7 @@ public interface FitnessResource {
 	@PUT
 	@Path("/exercises/{id}/tags")
 	@Consumes("application/xml")
-	void updateExerciseTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response updateExerciseTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
 	
 	/*
 	 * USER SECTION

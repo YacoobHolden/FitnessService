@@ -71,8 +71,9 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public void updateWorkout(int id, nz.ac.auckland.fitness.dto.Workout workoutDTO) {
+	public Response updateWorkout(int id, nz.ac.auckland.fitness.dto.Workout workoutDTO) {
 		// TODO Auto-generated method stub
+		return null;
 		
 	}
 
@@ -95,8 +96,9 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public void updateWorkoutTags(int id, GenericType<List<Tag>> tags) {
+	public Response updateWorkoutTags(int id, GenericType<List<Tag>> tags) {
 		// TODO Auto-generated method stub
+		return null;
 		
 	}
 
@@ -140,9 +142,27 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public void updateExercise(int id, nz.ac.auckland.fitness.dto.Exercise exDTO) {
-		// TODO Auto-generated method stub
-		
+	public Response updateExercise(int id, nz.ac.auckland.fitness.dto.Exercise exDTO) {
+		// First, map to domain model and log
+		Exercise exNew = ExerciseMapper.toDomainModel(exDTO);
+		_logger.debug("Read exercise: " + exNew.toString());
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		Exercise exOld = null;
+		try {
+			_logger.debug("Querying the database for the exercise of id "+id);
+			TypedQuery<Exercise> query = em.createQuery(
+				"select ex from Exercise ex where ex._id = :id", Exercise.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			exOld = query.getSingleResult();
+			em.getTransaction().begin();
+			exOld = em.merge(exNew);
+			em.getTransaction().commit();
+			return Response.status(204).build();
+		} catch(NoResultException e) {
+			// Exercise doesn't exist in the database
+			throw new WebApplicationException("Could not find exercise with id: "+id,404);
+		}
 	}
 
 	@Override
@@ -158,9 +178,9 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public void updateExerciseTags(int id, GenericType<List<Tag>> tags) {
+	public Response updateExerciseTags(int id, GenericType<List<Tag>> tags) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
