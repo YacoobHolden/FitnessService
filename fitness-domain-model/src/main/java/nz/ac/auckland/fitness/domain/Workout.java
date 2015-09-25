@@ -3,6 +3,7 @@ package nz.ac.auckland.fitness.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -10,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -39,10 +41,11 @@ public class Workout {
 		joinColumns = @JoinColumn(name = "ID") ) @Column(name = "TEXT")
 	private Set<Tag> _tags;
 	
-	@ElementCollection 
-	@CollectionTable(
-		name = "WORKOUT_EXERCISES",
-		joinColumns = @JoinColumn(name = "ID") )
+	@OneToMany(cascade=CascadeType.PERSIST)
+	@JoinColumn(
+			name = "WORKOUT_ID",
+			nullable = false
+			)
 	private Set<Exercise> _exercises;
 	
 	protected Workout() {

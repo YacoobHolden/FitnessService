@@ -28,6 +28,7 @@ public class FitnessResourceImpl implements FitnessResource{
 	public Response createWorkout(nz.ac.auckland.fitness.dto.Workout workoutDTO) {
 		// First, map to domain model and log
 		Workout wo = WorkoutMapper.toDomainModel(workoutDTO);
+		
 		_logger.debug("Read workout: " + wo.toString());
 		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 			
@@ -268,6 +269,7 @@ public class FitnessResourceImpl implements FitnessResource{
 			TypedQuery<Workout> query = em.createQuery(
 				"select wo from Workout wo where wo._name = :name", Workout.class
 				).setParameter("name", wo.get_name());
+			Workout wo2 = query.getSingleResult();
 		} catch(NoResultException e) {
 			// Workout doesn't exist in the database
 			return false;

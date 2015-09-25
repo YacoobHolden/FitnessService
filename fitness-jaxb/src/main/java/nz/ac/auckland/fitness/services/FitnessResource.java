@@ -37,7 +37,6 @@ public interface FitnessResource {
 	@POST
 	@Consumes("application/xml")
 	@Path("/workouts")
-	@Produces("application/xml")
 	Response createWorkout(Workout workoutDTO);
 
 	@GET

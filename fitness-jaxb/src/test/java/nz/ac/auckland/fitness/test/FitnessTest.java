@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 
 import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.Exercise;
+import nz.ac.auckland.fitness.dto.Workout;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,7 +53,7 @@ public class FitnessTest {
 	@Test
 	public void testsPass() {}
 	
-	@Test
+	//@Test
 	public void testExercise() {
 		Exercise run = new DistanceExercise("testre", "Units in KM",5.0);
 
@@ -80,6 +81,42 @@ public class FitnessTest {
 		if (response2.getStatus() != 204) {
 			fail("Failed to put existing Exercise");
 		}
+
+	}
+	
+	@Test
+	public void testWorkout() {
+		// Setup stuff
+		Exercise run = new DistanceExercise("final tester", "Units in KM",5.0);
+		Set<Exercise> exSet = new HashSet<Exercise>();
+		exSet.add(run);
+		Workout wo = new Workout("Going For another runner", "Units in KM", exSet);
+
+		// TEST POST
+		Response response = _client
+				.target(WEB_SERVICE_URI+"/workouts").request()
+				.post(Entity.xml(wo));
+		if (response.getStatus() != 201) {
+			fail("Failed to create new Workout");
+		}
+
+		String location = response.getLocation().toString();
+		response.close();
+		
+		/*
+		// TEST GET
+		Exercise exFromService = null;
+		exFromService = (DistanceExercise)_client.target(location).request().get(Exercise.class);
+		assertEquals(run.get_name(), exFromService.get_name());
+		
+		// TEST PUT
+		exFromService.set_name("New Namer");
+		Response response2 = _client
+				.target(WEB_SERVICE_URI+"/exercises/" + exFromService.get_id()).request()
+				.put(Entity.xml(exFromService));
+		if (response2.getStatus() != 204) {
+			fail("Failed to put existing Exercise");
+		}*/
 
 	}
 	   

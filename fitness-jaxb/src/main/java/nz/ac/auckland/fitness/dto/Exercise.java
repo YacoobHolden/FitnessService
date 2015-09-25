@@ -3,6 +3,7 @@ package nz.ac.auckland.fitness.dto;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,6 +13,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name="abstract_exercise")
+@XmlSeeAlso({
+	WeightExercise.class,
+	DistanceExercise.class,
+	SetExercise.class
+	})
 public abstract class Exercise {
 	
 	@XmlElement(name="id")

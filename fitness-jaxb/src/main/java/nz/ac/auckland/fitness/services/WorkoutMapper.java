@@ -16,7 +16,7 @@ import nz.ac.auckland.fitness.domain.Workout;
  */
 public class WorkoutMapper {
 
-	static Workout toDomainModel(nz.ac.auckland.fitness.dto.Workout dtoWorkout) {
+	public static Workout toDomainModel(nz.ac.auckland.fitness.dto.Workout dtoWorkout) {
 		// First map the exercises
 		HashSet<Exercise> mappedExs = new HashSet<Exercise>();
 		for (nz.ac.auckland.fitness.dto.Exercise ex : dtoWorkout.get_exercises()){
