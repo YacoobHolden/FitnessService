@@ -2,6 +2,7 @@ package nz.ac.auckland.fitness.services;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,9 +60,21 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public GenericType<List<nz.ac.auckland.fitness.dto.Workout>> searchWorkoutByTag(UriInfo uriInfo) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<nz.ac.auckland.fitness.dto.Workout> searchWorkoutByTag(UriInfo uriInfo) {
+		Set<Workout> resultSet = new HashSet<Workout>();
+		List<String> tags = uriInfo.getQueryParameters().get("tag");
+		for (String s : tags){
+			TypedQuery<Workout> query = em.createQuery(
+					"select wo from Workout wo where :tag member of wo._tags", Workout.class
+					).setParameter("tag", s);
+			resultSet.addAll(query.getResultList());
+		}
+		// Map results to DTOS
+		Set<nz.ac.auckland.fitness.dto.Workout> returnSet = new HashSet<nz.ac.auckland.fitness.dto.Workout>();
+		for (Workout wo : resultSet){
+			returnSet.add(WorkoutMapper.toDto(wo));
+		}
+		return returnSet;
 	}
 
 	@Override
@@ -83,34 +96,104 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public Response updateWorkout(int id, nz.ac.auckland.fitness.dto.Workout workoutDTO) {
-		// TODO Auto-generated method stub
-		return null;
-		
+		// First, map to domain model and log
+		Workout woNew = WorkoutMapper.toDomainModel(workoutDTO);
+		_logger.debug("Read Workout: " + woNew.toString());
+		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		Workout woOld = null;
+		try {
+			_logger.debug("Querying the database for the Workout of id "+id);
+			TypedQuery<Workout> query = em.createQuery(
+				"select ex from Workout ex where ex._id = :id", Workout.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			woOld = query.getSingleResult();
+			em.getTransaction().begin();
+			woOld = em.merge(woNew);
+			em.getTransaction().commit();
+			return Response.status(204).build();
+		} catch(NoResultException e) {
+			// Workout doesn't exist in the database
+			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+		}
 	}
 
 	@Override
 	public void removeWorkout(int id) {
-		// TODO Auto-generated method stub
+		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		Workout woOld = null;
+		try {
+			_logger.debug("Querying the database for the Workout of id "+id);
+			TypedQuery<Workout> query = em.createQuery(
+				"select ex from Workout ex where ex._id = :id", Workout.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			woOld = query.getSingleResult();
+			em.getTransaction().begin();
+			em.remove(woOld);
+			em.getTransaction().commit();
+		} catch(NoResultException e) {
+			// Workout doesn't exist in the database
+			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+		}
 		
 	}
 
 	@Override
-	public GenericType<List<Tag>> retrieveWorkoutTags(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<Tag> retrieveWorkoutTags(int id) {
+		Workout wo = null;
+		try {
+			_logger.debug("Querying the database for the Workout of id "+id);
+			TypedQuery<Workout> query = em.createQuery(
+				"select wo from Workout wo where wo._id = :id", Workout.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			wo = query.getSingleResult();
+			return wo.get_tags();
+		} catch(NoResultException e) {
+			// Workout doesn't exist in the database
+			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+		}
 	}
 
 	@Override
-	public Response createWorkoutTags(int id, GenericType<List<Tag>> tags) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response createWorkoutTags(int id, Set<Tag> tags) {
+		Workout wo = null;
+		try {
+			_logger.debug("Querying the database for the Workout of id "+id);
+			TypedQuery<Workout> query = em.createQuery(
+				"select wo from Workout wo where wo._id = :id", Workout.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			wo = query.getSingleResult();
+			em.getTransaction().begin();
+			wo.set_tags(tags);
+			em.getTransaction().commit();
+			return Response.status(204).build();
+		} catch(NoResultException e) {
+			// Workout doesn't exist in the database
+			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+		}
 	}
 
 	@Override
-	public Response updateWorkoutTags(int id, GenericType<List<Tag>> tags) {
-		// TODO Auto-generated method stub
-		return null;
-		
+	public Response updateWorkoutTags(int id, Set<Tag> tags) {
+		Workout wo = null;
+		try {
+			_logger.debug("Querying the database for the Workout of id "+id);
+			TypedQuery<Workout> query = em.createQuery(
+				"select wo from Workout wo where wo._id = :id", Workout.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			wo = query.getSingleResult();
+			em.getTransaction().begin();
+			wo.set_tags(tags);
+			em.getTransaction().commit();
+			return Response.status(204).build();
+		} catch(NoResultException e) {
+			// Workout doesn't exist in the database
+			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+		}
 	}
 
 	@Override
@@ -151,6 +234,26 @@ public class FitnessResourceImpl implements FitnessResource{
 		}
 		return ExerciseMapper.toDto(ex);
 	}
+	
+	// Example is exercises?tag=running&tag=test
+	@Override
+	public Set<nz.ac.auckland.fitness.dto.Exercise> searchExerciseByTag(
+			UriInfo uriInfo) {
+		Set<Exercise> resultSet = new HashSet<Exercise>();
+		List<String> tags = uriInfo.getQueryParameters().get("tag");
+		for (String s : tags){
+			TypedQuery<Exercise> query = em.createQuery(
+					"select ex from Exercise ex where :tag member of ex._tags", Exercise.class
+					).setParameter("tag", s);
+			resultSet.addAll(query.getResultList());
+		}
+		// Map results to DTOS
+		Set<nz.ac.auckland.fitness.dto.Exercise> returnSet = new HashSet<nz.ac.auckland.fitness.dto.Exercise>();
+		for (Exercise ex : resultSet){
+			returnSet.add(ExerciseMapper.toDto(ex));
+		}
+		return returnSet;
+	}
 
 	@Override
 	public Response updateExercise(int id, nz.ac.auckland.fitness.dto.Exercise exDTO) {
@@ -177,21 +280,60 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public GenericType<List<nz.ac.auckland.fitness.dto.Exercise>> retrieveExerciseTags(UriInfo uriInfo) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<Tag> retrieveExerciseTags(int id) {
+		Exercise ex = null;
+		try {
+			_logger.debug("Querying the database for the exercise of id "+id);
+			TypedQuery<Exercise> query = em.createQuery(
+				"select ex from Exercise ex where ex._id = :id", Exercise.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			ex = query.getSingleResult();
+			return ex.get_tags();
+		} catch(NoResultException e) {
+			// Exercise doesn't exist in the database
+			throw new WebApplicationException("Could not find exercise with id: "+id,404);
+		}
 	}
 
 	@Override
-	public Response createExerciseTags(int id, GenericType<List<Tag>> tags) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response createExerciseTags(int id, Set<Tag> tags) {
+		Exercise ex = null;
+		try {
+			_logger.debug("Querying the database for the exercise of id "+id);
+			TypedQuery<Exercise> query = em.createQuery(
+				"select ex from Exercise ex where ex._id = :id", Exercise.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			ex = query.getSingleResult();
+			em.getTransaction().begin();
+			ex.set_tags(tags);
+			em.getTransaction().commit();
+			return Response.status(204).build();
+		} catch(NoResultException e) {
+			// Exercise doesn't exist in the database
+			throw new WebApplicationException("Could not find exercise with id: "+id,404);
+		}
 	}
 
 	@Override
-	public Response updateExerciseTags(int id, GenericType<List<Tag>> tags) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response updateExerciseTags(int id, Set<Tag> tags) {
+		Exercise ex = null;
+		try {
+			_logger.debug("Querying the database for the exercise of id "+id);
+			TypedQuery<Exercise> query = em.createQuery(
+				"select ex from Exercise ex where ex._id = :id", Exercise.class
+				).setParameter("id", id);
+			// If we can find old result, persist new one
+			ex = query.getSingleResult();
+			em.getTransaction().begin();
+			ex.set_tags(tags);
+			em.getTransaction().commit();
+			return Response.status(204).build();
+		} catch(NoResultException e) {
+			// Exercise doesn't exist in the database
+			throw new WebApplicationException("Could not find exercise with id: "+id,404);
+		}
 	}
 
 	@Override
@@ -220,8 +362,18 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public nz.ac.auckland.fitness.dto.User retrieveUser(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		User u = null;
+		try {
+			_logger.debug("Querying the database for the user of id "+id);
+			TypedQuery<User> query = em.createQuery(
+				"select u from User u where u._id = :id", User.class
+				).setParameter("id", id);
+			u = query.getSingleResult();
+		} catch(NoResultException e) {
+			// User doesn't exist in the database
+			throw new WebApplicationException(404);
+		}
+		return UserMapper.toDto(u);
 	}
 
 	@Override
@@ -231,7 +383,7 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public GenericType<List<nz.ac.auckland.fitness.dto.WorkoutRecord>> retrieveWorkoutRecords(int id) {
+	public Set<nz.ac.auckland.fitness.dto.WorkoutRecord> retrieveWorkoutRecords(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -300,6 +452,5 @@ public class FitnessResourceImpl implements FitnessResource{
 		}
 		return true;
 	}
-
 	
 }

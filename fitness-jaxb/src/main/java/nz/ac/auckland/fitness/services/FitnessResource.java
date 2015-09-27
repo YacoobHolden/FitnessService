@@ -1,6 +1,7 @@
 package nz.ac.auckland.fitness.services;
 
-import java.util.List;
+import java.util.Set;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -42,7 +43,7 @@ public interface FitnessResource {
 	@GET
 	@Path("/workouts/")
 	@Produces("application/xml")
-	GenericType<List<Workout>> searchWorkoutByTag(@Context UriInfo uriInfo);
+	Set<Workout> searchWorkoutByTag(@Context UriInfo uriInfo);
 
 	// workouts/{id}
 	@GET
@@ -64,17 +65,17 @@ public interface FitnessResource {
 	@GET
 	@Path("/workouts/{id}/tags")
 	@Produces("application/xml")
-	GenericType<List<Tag>> retrieveWorkoutTags(@PathParam("id") int id);
+	Set<Tag> retrieveWorkoutTags(@PathParam("id") int id);
 	
 	@POST
 	@Path("/workouts/{id}/tags")
 	@Consumes("application/xml")
-	Response createWorkoutTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response createWorkoutTags(@PathParam("id") int id, Set<Tag> tags);
 	
 	@PUT
 	@Path("/workouts/{id}/tags")
 	@Consumes("application/xml")
-	Response updateWorkoutTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response updateWorkoutTags(@PathParam("id") int id, Set<Tag> tags);
 
 	/*
 	 * EXERCISE SECTION
@@ -91,27 +92,31 @@ public interface FitnessResource {
 	@Path("/exercises/{id}")
 	@Produces("application/xml")
 	Exercise retrieveExercise(@PathParam("id") int id);
+	
+	@GET
+	@Path("/exercises/")
+	@Produces("application/xml")
+	Set<Exercise> searchExerciseByTag(@Context UriInfo uriInfo);
 
 	@PUT
 	@Path("/exercises/{id}")
 	@Consumes("application/xml")
 	Response updateExercise(@PathParam("id") int id, Exercise exDTO);
 	
-	// workouts/{id}/tags
 	@GET
 	@Path("/exercises/{id}/tags")
 	@Produces("application/xml")
-	GenericType<List<Exercise>> retrieveExerciseTags(@Context UriInfo uriInfo);
+	Set<Tag> retrieveExerciseTags(@PathParam("id") int id);
 	
 	@POST
 	@Path("/exercises/{id}/tags")
 	@Consumes("application/xml")
-	Response createExerciseTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response createExerciseTags(@PathParam("id") int id, Set<Tag> tags);
 	
 	@PUT
 	@Path("/exercises/{id}/tags")
 	@Consumes("application/xml")
-	Response updateExerciseTags(@PathParam("id") int id, GenericType<List<Tag>> tags);
+	Response updateExerciseTags(@PathParam("id") int id, Set<Tag> tags);
 	
 	/*
 	 * USER SECTION
@@ -140,7 +145,7 @@ public interface FitnessResource {
 	@GET
 	@Path("/users/{id}/records")
 	@Produces("application/xml")
-	GenericType<List<WorkoutRecord>> retrieveWorkoutRecords(@PathParam("id") int id);
+	Set<WorkoutRecord> retrieveWorkoutRecords(@PathParam("id") int id);
 	
 	// users/{id}/records
 	@GET

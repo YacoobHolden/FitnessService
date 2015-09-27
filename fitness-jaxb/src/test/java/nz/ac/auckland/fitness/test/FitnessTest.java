@@ -14,8 +14,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
+import nz.ac.auckland.fitness.domain.Tag;
 import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.Exercise;
 import nz.ac.auckland.fitness.dto.Workout;
@@ -53,9 +56,12 @@ public class FitnessTest {
 	@Test
 	public void testsPass() {}
 	
-	//@Test
+	@Test
 	public void testExercise() {
-		Exercise run = new DistanceExercise("testre", "Units in KM",5.0);
+		// Random name
+		Double nameNum = Math.random()*10000;
+		String name = nameNum.toString();
+		Exercise run = new DistanceExercise(name, "Units in KM",5.0);
 
 		// TEST POST
 		Response response = _client
@@ -81,10 +87,30 @@ public class FitnessTest {
 		if (response2.getStatus() != 204) {
 			fail("Failed to put existing Exercise");
 		}
+		
+		// TEST POST TAGS
+		Set<Tag> tags = new HashSet<Tag>();
+		Tag t1 = new Tag("Hardcore");
+		Tag t2 = new Tag("Running");
+		tags.add(t1);
+		tags.add(t2);
+		// Wrap as generic entity
+		GenericEntity<Set<Tag>> tagEntity = new GenericEntity<Set<Tag>>(tags) { };
+		Response response3 = _client
+				.target(WEB_SERVICE_URI+"/exercises/" + exFromService.get_id() +"/tags").request()
+				.post(Entity.xml(tagEntity));
+		if (response3.getStatus() != 204) {
+			fail("Failed to post new tags");
+		}
+		
+		// TEST SEARCH BY TAGS
+		Set<Exercise> exerciseList = _client
+				.target(WEB_SERVICE_URI+"/exercises?tag=Running&tag=Hardcore").request()
+				.get( new GenericType<Set<Exercise>>(){});
 
 	}
 	
-	@Test
+	//@Test
 	public void testWorkout() {
 		Double nameNum = Math.random()*10000;
 		String name = nameNum.toString();
