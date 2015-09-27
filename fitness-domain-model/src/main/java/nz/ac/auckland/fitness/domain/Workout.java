@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -41,11 +43,12 @@ public class Workout {
 		joinColumns = @JoinColumn(name = "ID") ) @Column(name = "TEXT")
 	private Set<Tag> _tags;
 	
-	@OneToMany(cascade=CascadeType.PERSIST)
-	@JoinColumn(
-			name = "WORKOUT_ID",
-			nullable = false
-			)
+	@ManyToMany
+	@JoinTable(name = "WORKOUT_EXERCISES",
+		joinColumns =
+		@JoinColumn(name = "WORKOUT_ID", referencedColumnName = "ID" , nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "EXERCISE_ID", referencedColumnName = "ID")
+	)
 	private Set<Exercise> _exercises;
 	
 	protected Workout() {

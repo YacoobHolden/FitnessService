@@ -29,7 +29,8 @@ public abstract class Exercise {
 	@Column(name = "ID")
 	private int _id;
 	
-	@Column(name = "NAME", unique=true)
+	// REMOVE UNIQUENESS CONSTRAINT FOR NOW
+	@Column(name = "NAME")//, unique=true)
 	private String _name;
 	
 	@Column(name = "DESCRIPTION")

@@ -86,11 +86,28 @@ public class FitnessTest {
 	
 	@Test
 	public void testWorkout() {
-		// Setup stuff
-		Exercise run = new DistanceExercise("final tester", "Units in KM",5.0);
+		Double nameNum = Math.random()*10000;
+		String name = nameNum.toString();
+		Exercise runner = new DistanceExercise(name, "Units in KM",5.0);
+
+		// TEST POST
+		Response response2 = _client
+				.target(WEB_SERVICE_URI+"/exercises").request()
+				.post(Entity.xml(runner));
+		if (response2.getStatus() != 201) {
+			fail("Failed to create new Exercise");
+		}
+
+		String location2 = response2.getLocation().toString();
+		response2.close();
+		
+		// TEST GET
+		Exercise run = null;
+		run = (DistanceExercise)_client.target(location2).request().get(Exercise.class);
+				
 		Set<Exercise> exSet = new HashSet<Exercise>();
-		exSet.add(run);
-		Workout wo = new Workout("Going For another runner", "Units in KM", exSet);
+		exSet.add(runner);
+		Workout wo = new Workout(name, "Big party", exSet);
 
 		// TEST POST
 		Response response = _client

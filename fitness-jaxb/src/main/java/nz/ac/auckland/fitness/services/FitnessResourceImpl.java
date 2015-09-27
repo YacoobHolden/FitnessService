@@ -2,7 +2,9 @@ package nz.ac.auckland.fitness.services;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -23,6 +25,8 @@ public class FitnessResourceImpl implements FitnessResource{
 	
 	// Setup a Logger.
 	private static Logger _logger = LoggerFactory.getLogger(FitnessResourceImpl.class);
+	
+	private static EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 
 	@Override
 	public Response createWorkout(nz.ac.auckland.fitness.dto.Workout workoutDTO) {
@@ -30,13 +34,19 @@ public class FitnessResourceImpl implements FitnessResource{
 		Workout wo = WorkoutMapper.toDomainModel(workoutDTO);
 		
 		_logger.debug("Read workout: " + wo.toString());
-		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
-			
+		em.getTransaction().begin();
 		// Check it exists
 		if (!checkWorkout(em,wo)){
-			// Then persist the workout in the database.
-			em.getTransaction().begin();
-			em.persist(wo);
+			// Map its exercises to managed exercises
+			Set<Exercise> newList = new HashSet<Exercise>();
+			for (Exercise ex : wo.get_exercises()){
+				 Exercise storeEx = em.find(Exercise.class, ex.get_id());
+				// Persist them if not persisted
+				storeEx = em.merge(ex);
+				newList.add(storeEx);	
+			}
+			wo.set_exercises(newList);
+			em.merge(wo);
 			em.getTransaction().commit();
 			
 			return Response.created(URI.create("/fitness/workouts/" + wo.get_id()))
@@ -56,7 +66,7 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public nz.ac.auckland.fitness.dto.Workout retrieveWorkout(int id) {
-		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Workout wo = null;
 		try {
 			_logger.debug("Querying the database for the workout of id "+id);
@@ -108,7 +118,7 @@ public class FitnessResourceImpl implements FitnessResource{
 		// First, map to domain model and log
 		Exercise ex = ExerciseMapper.toDomainModel(exDTO);
 		_logger.debug("Read exercise: " + ex.toString());
-		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		// Check it exists
 		if (!checkExercise(em,ex)){
 			// Then persist the exercise in the database.
@@ -127,7 +137,7 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public nz.ac.auckland.fitness.dto.Exercise retrieveExercise(int id) {
-		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Exercise ex = null;
 		try {
 			_logger.debug("Querying the database for the exercise of id "+id);
@@ -147,7 +157,7 @@ public class FitnessResourceImpl implements FitnessResource{
 		// First, map to domain model and log
 		Exercise exNew = ExerciseMapper.toDomainModel(exDTO);
 		_logger.debug("Read exercise: " + exNew.toString());
-		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Exercise exOld = null;
 		try {
 			_logger.debug("Querying the database for the exercise of id "+id);
@@ -189,7 +199,7 @@ public class FitnessResourceImpl implements FitnessResource{
 		// First, map to domain model and log
 		User u = UserMapper.toDomainModel(uDTO);
 		_logger.debug("Read user: " + u.toString());
-		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 			
 		// Check it exists
 		if (!checkUser(em,u)){
