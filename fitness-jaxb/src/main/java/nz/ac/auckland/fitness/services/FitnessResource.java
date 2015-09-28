@@ -1,5 +1,6 @@
 package nz.ac.auckland.fitness.services;
 
+import java.util.List;
 import java.util.Set;
 import java.util.Set;
 
@@ -142,10 +143,11 @@ public interface FitnessResource {
 	void removeUser(@PathParam("id") int id);
 	
 	// users/{id}/records
-	@GET
+	@POST
 	@Path("/users/{id}/records")
+	@Consumes("application/xml")
 	@Produces("application/xml")
-	Set<WorkoutRecord> retrieveWorkoutRecords(@PathParam("id") int id);
+	Response createWorkoutRecordForUser(@PathParam("id") int id, WorkoutRecord wrDTO);
 	
 	// users/{id}/records
 	@GET
@@ -153,10 +155,10 @@ public interface FitnessResource {
 	@Produces("application/xml")
 	WorkoutRecord subscribeToWorkoutRecords(@PathParam("id") int id);
 	
-	@POST
+	@GET
 	@Path("/users/{id}/records")
 	@Produces("application/xml")
-	WorkoutRecord retrieveWorkoutRecord(@PathParam("id") int id);
+	List<WorkoutRecord> retrieveWorkoutRecordsForUser(@PathParam("id") int id);
 	
 	// users/{id}/records/{rid}
 	@GET

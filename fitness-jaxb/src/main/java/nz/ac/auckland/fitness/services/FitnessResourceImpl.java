@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -350,7 +351,7 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.persist(u);
 			em.getTransaction().commit();
 			
-			return Response.created(URI.create("/users/" + u.get_id()))
+			return Response.created(URI.create("/fitness/users/" + u.get_id()))
 					.build();
 		}
 		else {
@@ -383,9 +384,25 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public Set<nz.ac.auckland.fitness.dto.WorkoutRecord> retrieveWorkoutRecords(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Response createWorkoutRecordForUser(int id, nz.ac.auckland.fitness.dto.WorkoutRecord wrDTO) {
+		User u = null;
+		try {
+			_logger.debug("Querying the database for the user of id "+id);
+			TypedQuery<User> query = em.createQuery(
+				"select u from User u where u._id = :id", User.class
+				).setParameter("id", id);
+			u = query.getSingleResult();
+		} catch(NoResultException e) {
+			// User doesn't exist in the database
+			throw new WebApplicationException(404);
+		}
+		em.getTransaction().begin();
+		WorkoutRecord wr = WorkoutRecordMapper.toDomainModel(wrDTO);
+		u.addRecord(wr);
+		em.merge(u);
+		em.getTransaction().commit();
+		return Response.created(URI.create("/fitness/users/" + u.get_id() + "/records/" + wr.get_id()))
+				.build();
 	}
 
 	@Override
@@ -395,15 +412,39 @@ public class FitnessResourceImpl implements FitnessResource{
 	}
 
 	@Override
-	public nz.ac.auckland.fitness.dto.WorkoutRecord retrieveWorkoutRecord(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<nz.ac.auckland.fitness.dto.WorkoutRecord> retrieveWorkoutRecordsForUser(int id){
+		User u = null;
+		try {
+			_logger.debug("Querying the database for the user of id "+id);
+			TypedQuery<User> query = em.createQuery(
+				"select u from User u where u._id = :id", User.class
+				).setParameter("id", id);
+			u = query.getSingleResult();
+		} catch(NoResultException e) {
+			// User doesn't exist in the database
+			throw new WebApplicationException(404);
+		}
+		List<nz.ac.auckland.fitness.dto.WorkoutRecord> recordList =  new ArrayList<nz.ac.auckland.fitness.dto.WorkoutRecord>();
+		for (WorkoutRecord wr : u.get_records()){
+			recordList.add(WorkoutRecordMapper.toDto(wr));
+		}
+		return recordList;
 	}
 
 	@Override
 	public nz.ac.auckland.fitness.dto.WorkoutRecord retrieveWorkoutRecords(int id, int rid) {
-		// TODO Auto-generated method stub
-		return null;
+		WorkoutRecord wr = null;
+		try {
+			_logger.debug("Querying the database for the workout record of id "+id);
+			TypedQuery<WorkoutRecord> query = em.createQuery(
+				"select wr from WorkoutRecord wr where wr._id = :id", WorkoutRecord.class
+				).setParameter("id", id);
+			wr = query.getSingleResult();
+		} catch(NoResultException e) {
+			// Record doesn't exist in the database
+			throw new WebApplicationException(404);
+		}
+		return WorkoutRecordMapper.toDto(wr);
 	}
 	
 	/**

@@ -49,6 +49,10 @@ public class User {
 		}
 		return record;
 	}
+	
+	public void addRecord(WorkoutRecord wr){
+		_records.add(wr);
+	}
 
 	// DEFAULT SETTERS AND GETTERS
 	public int get_id() {
