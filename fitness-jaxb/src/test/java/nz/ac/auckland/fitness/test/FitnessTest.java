@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import nz.ac.auckland.fitness.domain.Tag;
 import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.Exercise;
+import nz.ac.auckland.fitness.dto.User;
 import nz.ac.auckland.fitness.dto.Workout;
 
 import org.junit.AfterClass;
@@ -54,9 +55,6 @@ public class FitnessTest {
 	}
 	
 	@Test
-	public void testsPass() {}
-	
-	@Test
 	public void testExercise() {
 		// Random name
 		Double nameNum = Math.random()*10000;
@@ -77,7 +75,7 @@ public class FitnessTest {
 		// TEST GET
 		Exercise exFromService = null;
 		exFromService = (DistanceExercise)_client.target(location).request().get(Exercise.class);
-		assertEquals(run.get_name(), exFromService.get_name());
+		assertEquals(run, exFromService);
 		
 		// TEST PUT
 		exFromService.set_name("New Namer");
@@ -87,6 +85,7 @@ public class FitnessTest {
 		if (response2.getStatus() != 204) {
 			fail("Failed to put existing Exercise");
 		}
+		response2.close();
 		
 		// TEST POST TAGS
 		Set<Tag> tags = new HashSet<Tag>();
@@ -102,65 +101,118 @@ public class FitnessTest {
 		if (response3.getStatus() != 204) {
 			fail("Failed to post new tags");
 		}
+		response3.close();
 		
 		// TEST SEARCH BY TAGS
 		Set<Exercise> exerciseList = _client
 				.target(WEB_SERVICE_URI+"/exercises?tag=Running&tag=Hardcore").request()
 				.get( new GenericType<Set<Exercise>>(){});
+		assertEquals(exFromService,(Exercise)exerciseList.toArray()[0]);
 
 	}
 	
-	//@Test
+	@Test
 	public void testWorkout() {
 		Double nameNum = Math.random()*10000;
 		String name = nameNum.toString();
 		Exercise runner = new DistanceExercise(name, "Units in KM",5.0);
 
 		// TEST POST
-		Response response2 = _client
+		Response response = _client
 				.target(WEB_SERVICE_URI+"/exercises").request()
 				.post(Entity.xml(runner));
-		if (response2.getStatus() != 201) {
+		if (response.getStatus() != 201) {
 			fail("Failed to create new Exercise");
+		}
+
+		String location = response.getLocation().toString();
+		response.close();
+		
+		// TEST GET
+		Exercise run = null;
+		run = (DistanceExercise)_client.target(location).request().get(Exercise.class);
+				
+		Set<Exercise> exSet = new HashSet<Exercise>();
+		exSet.add(run);
+		Workout wo = new Workout(name, "Running Workout", exSet);
+
+		// TEST POST
+		Response response2 = _client
+				.target(WEB_SERVICE_URI+"/workouts").request()
+				.post(Entity.xml(wo));
+		if (response2.getStatus() != 201) {
+			fail("Failed to create new Workout");
 		}
 
 		String location2 = response2.getLocation().toString();
 		response2.close();
 		
 		// TEST GET
-		Exercise run = null;
-		run = (DistanceExercise)_client.target(location2).request().get(Exercise.class);
-				
-		Set<Exercise> exSet = new HashSet<Exercise>();
-		exSet.add(runner);
-		Workout wo = new Workout(name, "Big party", exSet);
-
+		Workout woFromService = null;
+		woFromService = (Workout)_client.target(location2).request().get(Workout.class);
+		assertEquals(wo, woFromService);
+		
+		// TEST PUT
+		woFromService.set_name("New Namer");
+		Response response3 = _client
+				.target(WEB_SERVICE_URI+"/workouts/" + woFromService.get_id()).request()
+				.put(Entity.xml(woFromService));
+		if (response3.getStatus() != 204) {
+			fail("Failed to put existing Workout");
+		}
+		response3.close();
+		
+		// TEST POST TAGS
+		Set<Tag> tags = new HashSet<Tag>();
+		Tag t1 = new Tag("Hardcore");
+		Tag t2 = new Tag("Running");
+		tags.add(t1);
+		tags.add(t2);
+		// Wrap as generic entity
+		GenericEntity<Set<Tag>> tagEntity = new GenericEntity<Set<Tag>>(tags) { };
+		Response response4 = _client
+				.target(WEB_SERVICE_URI+"/workouts/" + woFromService.get_id() +"/tags").request()
+				.post(Entity.xml(tagEntity));
+		if (response4.getStatus() != 204) {
+			fail("Failed to post new tags");
+		}
+		response4.close();
+		
+		// TEST SEARCH BY TAGS
+		Set<Workout> workoutList = _client
+				.target(WEB_SERVICE_URI+"/workouts?tag=Running&tag=Hardcore").request()
+				.get( new GenericType<Set<Workout>>(){});
+		Workout wo2 = (Workout)workoutList.toArray()[0];
+		assertEquals(woFromService, (Workout)workoutList.toArray()[0]);
+		
+		// TEST REMOVE
+		Response response5 = _client.target(WEB_SERVICE_URI+"/workouts/"+woFromService.get_id()).request()
+				.delete();
+		if (response5.getStatus() != 204) {
+			fail("Failed to delete workout");
+		}
+		response5.close();
+	}
+	
+	@Test
+	public void testUser() {
+		// Create user
+		User user = new User("John Andrews",null);
+		
 		// TEST POST
 		Response response = _client
-				.target(WEB_SERVICE_URI+"/workouts").request()
-				.post(Entity.xml(wo));
+				.target(WEB_SERVICE_URI+"/users").request()
+				.post(Entity.xml(user));
 		if (response.getStatus() != 201) {
-			fail("Failed to create new Workout");
+			fail("Failed to create new User");
 		}
 
 		String location = response.getLocation().toString();
 		response.close();
 		
-		/*
 		// TEST GET
-		Exercise exFromService = null;
-		exFromService = (DistanceExercise)_client.target(location).request().get(Exercise.class);
-		assertEquals(run.get_name(), exFromService.get_name());
-		
-		// TEST PUT
-		exFromService.set_name("New Namer");
-		Response response2 = _client
-				.target(WEB_SERVICE_URI+"/exercises/" + exFromService.get_id()).request()
-				.put(Entity.xml(exFromService));
-		if (response2.getStatus() != 204) {
-			fail("Failed to put existing Exercise");
-		}*/
-
+		User uFromService = null;
+		uFromService = (User)_client.target(location).request().get(User.class);
+		assertEquals(user, uFromService);
 	}
-	   
 }

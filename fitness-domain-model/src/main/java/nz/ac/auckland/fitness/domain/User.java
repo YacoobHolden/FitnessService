@@ -27,8 +27,12 @@ public class User {
 	@Column(name="NAME", unique=true)
 	private String _name;
 	
-	@OneToMany( mappedBy = "_person" , fetch = FetchType.LAZY )
+	@OneToMany( mappedBy = "_person" , fetch = FetchType.EAGER )
 	private List<WorkoutRecord> _records;
+	
+	public User(){
+		_records = new ArrayList<WorkoutRecord>();
+	}
 	
 	public User(int id, String name){
 		_id=id;

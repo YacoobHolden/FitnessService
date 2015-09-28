@@ -27,41 +27,31 @@ public class FitnessResourceImpl implements FitnessResource{
 	
 	// Setup a Logger.
 	private static Logger _logger = LoggerFactory.getLogger(FitnessResourceImpl.class);
-	
-	private static EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
-
 	@Override
 	public Response createWorkout(nz.ac.auckland.fitness.dto.Workout workoutDTO) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		// First, map to domain model and log
 		Workout wo = WorkoutMapper.toDomainModel(workoutDTO);
-		
 		_logger.debug("Read workout: " + wo.toString());
-		em.getTransaction().begin();
 		// Check it exists
 		if (!checkWorkout(em,wo)){
-			// Map its exercises to managed exercises
-			Set<Exercise> newList = new HashSet<Exercise>();
-			for (Exercise ex : wo.get_exercises()){
-				 Exercise storeEx = em.find(Exercise.class, ex.get_id());
-				// Persist them if not persisted
-				storeEx = em.merge(ex);
-				newList.add(storeEx);	
-			}
-			wo.set_exercises(newList);
-			em.merge(wo);
+			em.getTransaction().begin();
+			em.persist(wo);
 			em.getTransaction().commit();
-			
+			em.close();
 			return Response.created(URI.create("/fitness/workouts/" + wo.get_id()))
 					.build();
 		}
 		else {
 			// If it exists, inform user
-			throw new WebApplicationException(403);
+			_logger.error("Workout of id:  "+wo.get_id()+" already exists");
+			throw new WebApplicationException("Workout of id:  "+wo.get_id()+" already exists",403);
 		}
 	}
 
 	@Override
 	public Set<nz.ac.auckland.fitness.dto.Workout> searchWorkoutByTag(UriInfo uriInfo) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Set<Workout> resultSet = new HashSet<Workout>();
 		List<String> tags = uriInfo.getQueryParameters().get("tag");
 		for (String s : tags){
@@ -75,12 +65,13 @@ public class FitnessResourceImpl implements FitnessResource{
 		for (Workout wo : resultSet){
 			returnSet.add(WorkoutMapper.toDto(wo));
 		}
+		em.close();
 		return returnSet;
 	}
 
 	@Override
 	public nz.ac.auckland.fitness.dto.Workout retrieveWorkout(int id) {
-		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Workout wo = null;
 		try {
 			_logger.debug("Querying the database for the workout of id "+id);
@@ -90,8 +81,10 @@ public class FitnessResourceImpl implements FitnessResource{
 			wo = query.getSingleResult();
 		} catch(NoResultException e) {
 			// Workout doesn't exist in the database
-			throw new WebApplicationException(404);
+			_logger.error("Could not find workout with id: "+id);
+			throw new WebApplicationException("Could not find workout with id: "+id, 404);
 		}
+		em.close();
 		return WorkoutMapper.toDto(wo);
 	}
 
@@ -100,7 +93,7 @@ public class FitnessResourceImpl implements FitnessResource{
 		// First, map to domain model and log
 		Workout woNew = WorkoutMapper.toDomainModel(workoutDTO);
 		_logger.debug("Read Workout: " + woNew.toString());
-		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Workout woOld = null;
 		try {
 			_logger.debug("Querying the database for the Workout of id "+id);
@@ -108,20 +101,24 @@ public class FitnessResourceImpl implements FitnessResource{
 				"select ex from Workout ex where ex._id = :id", Workout.class
 				).setParameter("id", id);
 			// If we can find old result, persist new one
-			woOld = query.getSingleResult();
+			woOld = query.getSingleResult();	
 			em.getTransaction().begin();
-			woOld = em.merge(woNew);
+			woOld.set_name(woNew.get_name());
+			woOld.set_description(woNew.get_description());
+			woOld.set_exercises(woNew.get_exercises());
 			em.getTransaction().commit();
+			em.close();
 			return Response.status(204).build();
 		} catch(NoResultException e) {
 			// Workout doesn't exist in the database
-			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+			_logger.error("Could not find workout with id: "+id);
+			throw new WebApplicationException("Could not find workout with id: "+id,404);
 		}
 	}
 
 	@Override
 	public void removeWorkout(int id) {
-		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Workout woOld = null;
 		try {
 			_logger.debug("Querying the database for the Workout of id "+id);
@@ -135,13 +132,15 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.getTransaction().commit();
 		} catch(NoResultException e) {
 			// Workout doesn't exist in the database
-			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+			_logger.error("Could not find workout with id: "+id);
+			throw new WebApplicationException("Could not find workout with id: "+id,404);
 		}
-		
+		em.close();
 	}
 
 	@Override
 	public Set<Tag> retrieveWorkoutTags(int id) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Workout wo = null;
 		try {
 			_logger.debug("Querying the database for the Workout of id "+id);
@@ -150,15 +149,18 @@ public class FitnessResourceImpl implements FitnessResource{
 				).setParameter("id", id);
 			// If we can find old result, persist new one
 			wo = query.getSingleResult();
+			em.close();
 			return wo.get_tags();
 		} catch(NoResultException e) {
 			// Workout doesn't exist in the database
-			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+			_logger.error("Could not find workout with id: "+id);
+			throw new WebApplicationException("Could not find workout with id: "+id,404);
 		}
 	}
 
 	@Override
 	public Response createWorkoutTags(int id, Set<Tag> tags) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Workout wo = null;
 		try {
 			_logger.debug("Querying the database for the Workout of id "+id);
@@ -170,15 +172,18 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.getTransaction().begin();
 			wo.set_tags(tags);
 			em.getTransaction().commit();
+			em.close();
 			return Response.status(204).build();
 		} catch(NoResultException e) {
 			// Workout doesn't exist in the database
-			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+			_logger.error("Could not find workout with id: "+id);
+			throw new WebApplicationException("Could not find workout with id: "+id,404);
 		}
 	}
 
 	@Override
 	public Response updateWorkoutTags(int id, Set<Tag> tags) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Workout wo = null;
 		try {
 			_logger.debug("Querying the database for the Workout of id "+id);
@@ -190,38 +195,41 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.getTransaction().begin();
 			wo.set_tags(tags);
 			em.getTransaction().commit();
+			em.close();
 			return Response.status(204).build();
 		} catch(NoResultException e) {
 			// Workout doesn't exist in the database
-			throw new WebApplicationException("Could not find Workout with id: "+id,404);
+			_logger.error("Could not find workout with id: "+id);
+			throw new WebApplicationException("Could not find workout with id: "+id,404);
 		}
 	}
 
 	@Override
 	public Response createExercise(nz.ac.auckland.fitness.dto.Exercise exDTO) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		// First, map to domain model and log
 		Exercise ex = ExerciseMapper.toDomainModel(exDTO);
 		_logger.debug("Read exercise: " + ex.toString());
-		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		// Check it exists
 		if (!checkExercise(em,ex)){
 			// Then persist the exercise in the database.
 			em.getTransaction().begin();
 			em.persist(ex);
 			em.getTransaction().commit();
-			
+			em.close();
 			return Response.created(URI.create("/fitness/exercises/" + ex.get_id()))
 					.build();
 		}
 		else {
 			// If it exists, inform user
+			_logger.error("Exercise of id: "+ex.get_id()+" already exists");
 			throw new WebApplicationException(403);
 		}
 	}
 
 	@Override
 	public nz.ac.auckland.fitness.dto.Exercise retrieveExercise(int id) {
-		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Exercise ex = null;
 		try {
 			_logger.debug("Querying the database for the exercise of id "+id);
@@ -231,8 +239,10 @@ public class FitnessResourceImpl implements FitnessResource{
 			ex = query.getSingleResult();
 		} catch(NoResultException e) {
 			// Exercise doesn't exist in the database
+			_logger.error("Could not find exercise with id: "+id);
 			throw new WebApplicationException("Could not find exercise with id: "+id,404);
 		}
+		em.close();
 		return ExerciseMapper.toDto(ex);
 	}
 	
@@ -240,6 +250,7 @@ public class FitnessResourceImpl implements FitnessResource{
 	@Override
 	public Set<nz.ac.auckland.fitness.dto.Exercise> searchExerciseByTag(
 			UriInfo uriInfo) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Set<Exercise> resultSet = new HashSet<Exercise>();
 		List<String> tags = uriInfo.getQueryParameters().get("tag");
 		for (String s : tags){
@@ -253,6 +264,7 @@ public class FitnessResourceImpl implements FitnessResource{
 		for (Exercise ex : resultSet){
 			returnSet.add(ExerciseMapper.toDto(ex));
 		}
+		em.close();
 		return returnSet;
 	}
 
@@ -261,7 +273,7 @@ public class FitnessResourceImpl implements FitnessResource{
 		// First, map to domain model and log
 		Exercise exNew = ExerciseMapper.toDomainModel(exDTO);
 		_logger.debug("Read exercise: " + exNew.toString());
-		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Exercise exOld = null;
 		try {
 			_logger.debug("Querying the database for the exercise of id "+id);
@@ -271,11 +283,14 @@ public class FitnessResourceImpl implements FitnessResource{
 			// If we can find old result, persist new one
 			exOld = query.getSingleResult();
 			em.getTransaction().begin();
-			exOld = em.merge(exNew);
+			exOld.set_name(exNew.get_name());
+			exOld.set_description(exNew.get_description());
 			em.getTransaction().commit();
+			em.close();
 			return Response.status(204).build();
 		} catch(NoResultException e) {
 			// Exercise doesn't exist in the database
+			_logger.error("Could not find exercise with id: "+id);
 			throw new WebApplicationException("Could not find exercise with id: "+id,404);
 		}
 	}
@@ -283,6 +298,7 @@ public class FitnessResourceImpl implements FitnessResource{
 	@Override
 	public Set<Tag> retrieveExerciseTags(int id) {
 		Exercise ex = null;
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		try {
 			_logger.debug("Querying the database for the exercise of id "+id);
 			TypedQuery<Exercise> query = em.createQuery(
@@ -290,15 +306,18 @@ public class FitnessResourceImpl implements FitnessResource{
 				).setParameter("id", id);
 			// If we can find old result, persist new one
 			ex = query.getSingleResult();
+			em.close();
 			return ex.get_tags();
 		} catch(NoResultException e) {
 			// Exercise doesn't exist in the database
+			_logger.error("Could not find exercise with id: "+id);
 			throw new WebApplicationException("Could not find exercise with id: "+id,404);
 		}
 	}
 
 	@Override
 	public Response createExerciseTags(int id, Set<Tag> tags) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Exercise ex = null;
 		try {
 			_logger.debug("Querying the database for the exercise of id "+id);
@@ -310,15 +329,18 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.getTransaction().begin();
 			ex.set_tags(tags);
 			em.getTransaction().commit();
+			em.close();
 			return Response.status(204).build();
 		} catch(NoResultException e) {
 			// Exercise doesn't exist in the database
+			_logger.error("Could not find exercise with id: "+id);
 			throw new WebApplicationException("Could not find exercise with id: "+id,404);
 		}
 	}
 
 	@Override
 	public Response updateExerciseTags(int id, Set<Tag> tags) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		Exercise ex = null;
 		try {
 			_logger.debug("Querying the database for the exercise of id "+id);
@@ -330,39 +352,42 @@ public class FitnessResourceImpl implements FitnessResource{
 			em.getTransaction().begin();
 			ex.set_tags(tags);
 			em.getTransaction().commit();
+			em.close();
 			return Response.status(204).build();
 		} catch(NoResultException e) {
 			// Exercise doesn't exist in the database
+			_logger.error("Could not find exercise with id: "+id);
 			throw new WebApplicationException("Could not find exercise with id: "+id,404);
 		}
 	}
 
 	@Override
 	public Response createUser(nz.ac.auckland.fitness.dto.User uDTO) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		// First, map to domain model and log
 		User u = UserMapper.toDomainModel(uDTO);
 		_logger.debug("Read user: " + u.toString());
-		//EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
-			
 		// Check it exists
 		if (!checkUser(em,u)){
 			// Then persist the exercise in the database.
 			em.getTransaction().begin();
 			em.persist(u);
 			em.getTransaction().commit();
-			
+			em.close();
 			return Response.created(URI.create("/fitness/users/" + u.get_id()))
 					.build();
 		}
 		else {
 			// If it exists, inform user
-			throw new WebApplicationException(403);
+			_logger.error("User of id "+u.get_id()+" already exists");
+			throw new WebApplicationException("User of id "+u.get_id()+" already exists",403);
 		}
 		
 	}
 
 	@Override
 	public nz.ac.auckland.fitness.dto.User retrieveUser(int id) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		User u = null;
 		try {
 			_logger.debug("Querying the database for the user of id "+id);
@@ -372,8 +397,10 @@ public class FitnessResourceImpl implements FitnessResource{
 			u = query.getSingleResult();
 		} catch(NoResultException e) {
 			// User doesn't exist in the database
-			throw new WebApplicationException(404);
+			_logger.error("User of id "+id+" not found");
+			throw new WebApplicationException("User of id "+id+" not found",404);
 		}
+		em.close();
 		return UserMapper.toDto(u);
 	}
 
@@ -385,6 +412,7 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public Response createWorkoutRecordForUser(int id, nz.ac.auckland.fitness.dto.WorkoutRecord wrDTO) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		User u = null;
 		try {
 			_logger.debug("Querying the database for the user of id "+id);
@@ -394,13 +422,24 @@ public class FitnessResourceImpl implements FitnessResource{
 			u = query.getSingleResult();
 		} catch(NoResultException e) {
 			// User doesn't exist in the database
-			throw new WebApplicationException(404);
+			_logger.error("User of id "+id+" not found");
+			throw new WebApplicationException("User of id "+id+" not found", 404);
 		}
 		em.getTransaction().begin();
+		// Reconstitute fields from DTO
+		Workout wrsWorkout = em.find(Workout.class, wrDTO.get_workout_id());
+		if (wrsWorkout == null){
+			_logger.error("Workout of id "+wrDTO.get_workout_id()+" not found");
+			throw new WebApplicationException("Workout of id "+wrDTO.get_workout_id()+" not found", 404);
+		}
 		WorkoutRecord wr = WorkoutRecordMapper.toDomainModel(wrDTO);
+		wr.set_person(u);
+		wr.set_workout(wrsWorkout);
 		u.addRecord(wr);
+		em.merge(wr);
 		em.merge(u);
 		em.getTransaction().commit();
+		em.close();
 		return Response.created(URI.create("/fitness/users/" + u.get_id() + "/records/" + wr.get_id()))
 				.build();
 	}
@@ -413,6 +452,7 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public List<nz.ac.auckland.fitness.dto.WorkoutRecord> retrieveWorkoutRecordsForUser(int id){
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		User u = null;
 		try {
 			_logger.debug("Querying the database for the user of id "+id);
@@ -422,17 +462,20 @@ public class FitnessResourceImpl implements FitnessResource{
 			u = query.getSingleResult();
 		} catch(NoResultException e) {
 			// User doesn't exist in the database
-			throw new WebApplicationException(404);
+			_logger.error("User of id "+id+" not found");
+			throw new WebApplicationException("User of id "+id+" not found",404);
 		}
 		List<nz.ac.auckland.fitness.dto.WorkoutRecord> recordList =  new ArrayList<nz.ac.auckland.fitness.dto.WorkoutRecord>();
 		for (WorkoutRecord wr : u.get_records()){
 			recordList.add(WorkoutRecordMapper.toDto(wr));
 		}
+		em.close();
 		return recordList;
 	}
 
 	@Override
 	public nz.ac.auckland.fitness.dto.WorkoutRecord retrieveWorkoutRecords(int id, int rid) {
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		WorkoutRecord wr = null;
 		try {
 			_logger.debug("Querying the database for the workout record of id "+id);
@@ -442,8 +485,10 @@ public class FitnessResourceImpl implements FitnessResource{
 			wr = query.getSingleResult();
 		} catch(NoResultException e) {
 			// Record doesn't exist in the database
-			throw new WebApplicationException(404);
+			_logger.error("Record of id "+rid+" not found");
+			throw new WebApplicationException("Record of id "+rid+" not found", 404);
 		}
+		em.close();
 		return WorkoutRecordMapper.toDto(wr);
 	}
 	
@@ -487,6 +532,7 @@ public class FitnessResourceImpl implements FitnessResource{
 			TypedQuery<User> query = em.createQuery(
 				"select u from User u where u._name = :name", User.class
 				).setParameter("name", u.get_name());
+			u = query.getSingleResult();
 		} catch(NoResultException e) {
 			// User doesn't exist in the database
 			return false;

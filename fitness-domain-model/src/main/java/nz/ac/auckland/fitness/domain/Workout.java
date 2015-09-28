@@ -8,6 +8,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -43,7 +44,7 @@ public class Workout {
 		joinColumns = @JoinColumn(name = "ID") ) @Column(name = "TEXT")
 	private Set<Tag> _tags;
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable(name = "WORKOUT_EXERCISES",
 		joinColumns =
 		@JoinColumn(name = "WORKOUT_ID", referencedColumnName = "ID" , nullable = false),

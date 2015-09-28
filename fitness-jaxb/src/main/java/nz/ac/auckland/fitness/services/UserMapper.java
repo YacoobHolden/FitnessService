@@ -18,10 +18,17 @@ public class UserMapper {
 
 	public static nz.ac.auckland.fitness.dto.User toDto(User user) {
 		// First map the record
-		nz.ac.auckland.fitness.domain.WorkoutRecord domRecord = user.getLastRecord();
+		nz.ac.auckland.fitness.domain.WorkoutRecord domRecord = user
+				.getLastRecord();
 		// Then map the user
-		nz.ac.auckland.fitness.dto.User dtoUser = new nz.ac.auckland.fitness.dto.User(
-				user.get_id(), user.get_name(), WorkoutRecordMapper.toDto(domRecord));
+		nz.ac.auckland.fitness.dto.User dtoUser = null;
+		if (domRecord != null) {
+			dtoUser = new nz.ac.auckland.fitness.dto.User(user.get_id(),
+					user.get_name(), WorkoutRecordMapper.toDto(domRecord));
+		} else {
+			dtoUser = new nz.ac.auckland.fitness.dto.User(user.get_id(),
+					user.get_name(), null);
+		}
 		return dtoUser;
 	}
 }
