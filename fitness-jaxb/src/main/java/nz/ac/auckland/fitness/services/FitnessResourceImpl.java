@@ -436,7 +436,7 @@ public class FitnessResourceImpl implements FitnessResource{
 		wr.set_person(u);
 		wr.set_workout(wrsWorkout);
 		u.addRecord(wr);
-		em.merge(wr);
+		em.persist(wr);
 		em.merge(u);
 		em.getTransaction().commit();
 		em.close();
@@ -478,10 +478,10 @@ public class FitnessResourceImpl implements FitnessResource{
 		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
 		WorkoutRecord wr = null;
 		try {
-			_logger.debug("Querying the database for the workout record of id "+id);
+			_logger.debug("Querying the database for the workout record of id "+rid);
 			TypedQuery<WorkoutRecord> query = em.createQuery(
 				"select wr from WorkoutRecord wr where wr._id = :id", WorkoutRecord.class
-				).setParameter("id", id);
+				).setParameter("id", rid);
 			wr = query.getSingleResult();
 		} catch(NoResultException e) {
 			// Record doesn't exist in the database

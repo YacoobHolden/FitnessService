@@ -24,11 +24,11 @@ public class WorkoutRecord {
 	@Column(name = "ID")
 	private int _id;
 	
-	@ManyToOne( fetch = FetchType.LAZY ) 
+	@ManyToOne( fetch = FetchType.EAGER ) 
 	@JoinColumn( name = "PERSON_ID", nullable = false )
 	protected User _person;
 	
-	@ManyToOne( fetch = FetchType.LAZY ) 
+	@ManyToOne( fetch = FetchType.EAGER ) 
 	@JoinColumn(name = "WORKOUT_ID", nullable = false)
 	private Workout _workout;
 	

@@ -23,7 +23,10 @@ import nz.ac.auckland.fitness.dto.DistanceExercise;
 import nz.ac.auckland.fitness.dto.Exercise;
 import nz.ac.auckland.fitness.dto.User;
 import nz.ac.auckland.fitness.dto.Workout;
+import nz.ac.auckland.fitness.dto.WorkoutRecord;
 
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -214,5 +217,50 @@ public class FitnessTest {
 		User uFromService = null;
 		uFromService = (User)_client.target(location).request().get(User.class);
 		assertEquals(user, uFromService);
+
+		// GET WORKOUT SETUP
+		Double nameNum = Math.random()*10000;
+		String name = nameNum.toString();
+		Exercise runner = new DistanceExercise(name, "Units in KM",5.0);
+		Response response2 = _client
+				.target(WEB_SERVICE_URI+"/exercises").request()
+				.post(Entity.xml(runner));
+		if (response2.getStatus() != 201) {
+			fail("Failed to create new Exercise");
+		}
+		response2.close();
+		String location2 = response2.getLocation().toString();
+		Exercise run = null;
+		run = (DistanceExercise)_client.target(location2).request().get(Exercise.class);
+		Set<Exercise> exSet = new HashSet<Exercise>();
+		exSet.add(run);
+		Workout wo = new Workout(name, "Running Workout v2", exSet);
+		Response response3 = _client
+				.target(WEB_SERVICE_URI+"/workouts").request()
+				.post(Entity.xml(wo));
+		if (response3.getStatus() != 201) {
+			fail("Failed to create new Workout");
+		}
+		response3.close();
+		String location3 = response3.getLocation().toString();
+		Workout woFromService = null;
+		woFromService = (Workout)_client.target(location3).request().get(Workout.class);
+		
+		// TEST RECORD POST
+		WorkoutRecord wr = new WorkoutRecord(uFromService.get_id(), woFromService.get_id(), new LocalDate(2015, 7, 18), Duration.ZERO);
+		Response response4 = _client
+				.target(WEB_SERVICE_URI+"/users/"+uFromService.get_id()+"/records").request()
+				.post(Entity.xml(wr));
+		if (response4.getStatus() != 201) {
+			fail("Failed to create new WorkoutRecord");
+		}
+		response4.close();
+		String location4 = response4.getLocation().toString();
+		_logger.error(location4);
+		
+		// TEST RECORD GET
+		WorkoutRecord wrFromService = null;
+		wrFromService = (WorkoutRecord)_client.target(location4).request().get(WorkoutRecord.class);
+		//assertEquals(wr, wrFromService);
 	}
 }
