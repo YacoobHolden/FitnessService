@@ -406,8 +406,23 @@ public class FitnessResourceImpl implements FitnessResource{
 
 	@Override
 	public void removeUser(int id) {
-		// TODO Auto-generated method stub
-		
+		EntityManager em = Persistence.createEntityManagerFactory("auditorPU").createEntityManager();
+		User u = null;
+		try {
+			_logger.debug("Querying the database for the user of id "+id);
+			TypedQuery<User> query = em.createQuery(
+				"select u from User u where u._id = :id", User.class
+				).setParameter("id", id);
+			u = query.getSingleResult();
+		} catch(NoResultException e) {
+			// User doesn't exist in the database
+			_logger.error("User of id "+id+" not found");
+			throw new WebApplicationException("User of id "+id+" not found",404);
+		}
+		em.getTransaction().begin();
+		em.remove(u);
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class User {
 	@Column(name="NAME", unique=true)
 	private String _name;
 	
-	@OneToMany( mappedBy = "_person" , fetch = FetchType.EAGER )
+	@OneToMany( mappedBy = "_person" , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE )
 	private List<WorkoutRecord> _records;
 	
 	public User(){

@@ -262,5 +262,24 @@ public class FitnessTest {
 		WorkoutRecord wrFromService = null;
 		wrFromService = (WorkoutRecord)_client.target(location4).request().get(WorkoutRecord.class);
 		assertEquals(wr, wrFromService);
+		
+		// TEST REMOVE USER AND ASSOCIATED RECORDS
+		_client.target(WEB_SERVICE_URI+"/users/"+uFromService.get_id()).request().delete(WorkoutRecord.class);
+		try{
+			User uFromService2 = null;
+			uFromService2 = (User)_client.target(location).request().get(User.class);
+			fail("Failed to delete user");
+		} catch (WebApplicationException we){
+			// Do nothing as it was successful
+		}
+		
+		try{
+			WorkoutRecord wrFromService2 = null;
+			wrFromService2 = (WorkoutRecord)_client.target(location4).request().get(WorkoutRecord.class);
+			fail("Failed to delete associated record");
+		} catch (WebApplicationException we){
+			// Do nothing as it was successful
+		}
+		
 	}
 }
