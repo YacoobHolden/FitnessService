@@ -50,10 +50,14 @@ public class FitnessTest {
 	@BeforeClass
 	public static void setUpClient() throws ClassNotFoundException, SQLException{
 		_client = ClientBuilder.newClient();
+		// Clear db
+		_client.target(WEB_SERVICE_URI+"/cleardb").request().get();
 	}
 	
 	@AfterClass
 	public static void teardownClient() {
+		// Clear db
+		_client.target(WEB_SERVICE_URI+"/cleardb").request().get();
 		_client.close();
 	}
 	

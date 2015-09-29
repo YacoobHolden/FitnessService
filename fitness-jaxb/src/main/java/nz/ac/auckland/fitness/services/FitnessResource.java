@@ -1,5 +1,6 @@
 package nz.ac.auckland.fitness.services;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 import java.util.Set;
@@ -166,4 +167,8 @@ public interface FitnessResource {
 	@Produces("application/xml")
 	WorkoutRecord retrieveWorkoutRecords(@PathParam("id") int id, @PathParam("rid") int rid);
 	
+	// cleardb
+	@GET
+	@Path("/cleardb")
+	void clearDatabase() throws SQLException;
 }

@@ -2,6 +2,11 @@ package nz.ac.auckland.fitness.services;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +16,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -553,6 +561,32 @@ public class FitnessResourceImpl implements FitnessResource{
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public void clearDatabase() throws SQLException {
+		Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:~/test;mv_store=false", "sa", "sa");
+		Statement s = jdbcConnection.createStatement();
+		s.execute("SET REFERENTIAL_INTEGRITY FALSE");
+		Set<String> tables = new HashSet<String>();
+		ResultSet rs = s.executeQuery("select table_name "
+				+ "from INFORMATION_SCHEMA.tables "
+				+ "where table_type='TABLE' and table_schema='PUBLIC'");
+
+		while (rs.next()) {
+			tables.add(rs.getString(1));
+		}
+		rs.close();
+		for (String table : tables) {
+			_logger.debug("Deleting content from " + table);
+			s.executeUpdate("DELETE FROM " + table);
+			/*
+			if (dropTables) {
+				s.executeUpdate("DROP TABLE " + table);
+			}*/
+		}
+		s.execute("SET REFERENTIAL_INTEGRITY TRUE");
+		s.close();
 	}
 	
 }
