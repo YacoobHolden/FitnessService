@@ -261,6 +261,6 @@ public class FitnessTest {
 		// TEST RECORD GET
 		WorkoutRecord wrFromService = null;
 		wrFromService = (WorkoutRecord)_client.target(location4).request().get(WorkoutRecord.class);
-		//assertEquals(wr, wrFromService);
+		assertEquals(wr, wrFromService);
 	}
 }

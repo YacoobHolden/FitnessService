@@ -108,7 +108,6 @@ public class WorkoutRecord {
 		result = prime * result + ((_date == null) ? 0 : _date.hashCode());
 		result = prime * result
 				+ ((_duration == null) ? 0 : _duration.hashCode());
-		result = prime * result + _id;
 		result = prime * result + _person_id;
 		result = prime * result + _workout_id;
 		return result;
@@ -132,8 +131,6 @@ public class WorkoutRecord {
 			if (other._duration != null)
 				return false;
 		} else if (!_duration.equals(other._duration))
-			return false;
-		if (_id != other._id)
 			return false;
 		if (_person_id != other._person_id)
 			return false;
