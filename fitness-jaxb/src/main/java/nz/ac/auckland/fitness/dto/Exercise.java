@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 /*
  * Abstract DTO class used to represent an exercise
@@ -17,6 +19,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 	WeightExercise.class,
 	DistanceExercise.class,
 	SetExercise.class
+	})
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+	@JsonSubTypes.Type(value = DistanceExercise.class, name = "distanceDTO"),
+	@JsonSubTypes.Type(value = SetExercise.class, name = "setDTO"),
+	@JsonSubTypes.Type(value = WeightExercise.class, name = "weightDTO") 
 	})
 public abstract class Exercise {
 	

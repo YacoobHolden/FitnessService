@@ -9,11 +9,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonTypeName;
+
 /*
  * DTO Class used to represent an exercise involving sets
  */
 @XmlRootElement(name="set_exercise")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonTypeName("setDTO")
 public class SetExercise extends Exercise{
 	
 	@XmlElementWrapper(name="reps")

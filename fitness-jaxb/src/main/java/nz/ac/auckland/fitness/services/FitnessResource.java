@@ -38,45 +38,45 @@ public interface FitnessResource {
 
 	// workouts
 	@POST
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	@Path("/workouts")
 	Response createWorkout(Workout workoutDTO);
 
 	@GET
 	@Path("/workouts/")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	Set<Workout> searchWorkoutByTag(@Context UriInfo uriInfo);
 
 	// workouts/{id}
 	@GET
 	@Path("/workouts/{id}")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	Workout retrieveWorkout(@PathParam("id") int id);
 
 	@PUT
 	@Path("/workouts/{id}")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	Response updateWorkout(@PathParam("id") int id, Workout workoutDTO);
 
 	@DELETE
 	@Path("/workouts/{id}")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	void removeWorkout(@PathParam("id") int id);
 	
 	// workouts/{id}/tags
 	@GET
 	@Path("/workouts/{id}/tags")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	Set<Tag> retrieveWorkoutTags(@PathParam("id") int id);
 	
 	@POST
 	@Path("/workouts/{id}/tags")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	Response createWorkoutTags(@PathParam("id") int id, Set<Tag> tags);
 	
 	@PUT
 	@Path("/workouts/{id}/tags")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	Response updateWorkoutTags(@PathParam("id") int id, Set<Tag> tags);
 
 	/*
@@ -85,39 +85,39 @@ public interface FitnessResource {
 
 	// exercises
 	@POST
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	@Path("/exercises")
 	Response createExercise(Exercise ex);
 
 	// exercises/{id}
 	@GET
 	@Path("/exercises/{id}")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	Exercise retrieveExercise(@PathParam("id") int id);
 	
 	@GET
 	@Path("/exercises/")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	Set<Exercise> searchExerciseByTag(@Context UriInfo uriInfo);
 
 	@PUT
 	@Path("/exercises/{id}")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	Response updateExercise(@PathParam("id") int id, Exercise exDTO);
 	
 	@GET
 	@Path("/exercises/{id}/tags")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	Set<Tag> retrieveExerciseTags(@PathParam("id") int id);
 	
 	@POST
 	@Path("/exercises/{id}/tags")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	Response createExerciseTags(@PathParam("id") int id, Set<Tag> tags);
 	
 	@PUT
 	@Path("/exercises/{id}/tags")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	Response updateExerciseTags(@PathParam("id") int id, Set<Tag> tags);
 	
 	/*
@@ -127,44 +127,44 @@ public interface FitnessResource {
 	// users
 	@POST
 	@Path("/users")
-	@Consumes("application/xml")
-	@Produces("application/xml")
+	@Consumes({"application/xml","application/json"})
+	@Produces({"application/xml","application/json"})
 	Response createUser(User u);
 	
 	// users/{id}
 	@GET
 	@Path("/users/{id}")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	User retrieveUser(@PathParam("id") int id);
 
 
 	@DELETE
 	@Path("/users/{id}")
-	@Consumes("application/xml")
+	@Consumes({"application/xml","application/json"})
 	void removeUser(@PathParam("id") int id);
 	
 	// users/{id}/records
 	@POST
 	@Path("/users/{id}/records")
-	@Consumes("application/xml")
-	@Produces("application/xml")
+	@Consumes({"application/xml","application/json"})
+	@Produces({"application/xml","application/json"})
 	Response createWorkoutRecordForUser(@PathParam("id") int id, WorkoutRecord wrDTO);
 	
 	// users/{id}/records
 	@GET
 	@Path("/users/{id}/records/subscribe")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	WorkoutRecord subscribeToWorkoutRecords(@PathParam("id") int id);
 	
 	@GET
 	@Path("/users/{id}/records")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	List<WorkoutRecord> retrieveWorkoutRecordsForUser(@PathParam("id") int id);
 	
 	// users/{id}/records/{rid}
 	@GET
 	@Path("/users/{id}/records/{rid}")
-	@Produces("application/xml")
+	@Produces({"application/xml","application/json"})
 	WorkoutRecord retrieveWorkoutRecords(@PathParam("id") int id, @PathParam("rid") int rid);
 	
 	// cleardb

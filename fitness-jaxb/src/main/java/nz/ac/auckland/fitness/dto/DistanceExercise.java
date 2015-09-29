@@ -5,11 +5,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.annotate.JsonTypeName;
+
 /*
  * DTO Class used to represent an exercise involving some distance
  */
 @XmlRootElement(name="distance_exercise")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonTypeName("distanceDTO")
 public class DistanceExercise extends Exercise{
 	
 	@XmlElement(name="distance")

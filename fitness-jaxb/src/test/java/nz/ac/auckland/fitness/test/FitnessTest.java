@@ -286,4 +286,26 @@ public class FitnessTest {
 		}
 		
 	}
+	
+	@Test
+	public void testJSON() {
+		// Random name
+		Exercise run = new DistanceExercise("JSONTest", "Units in KM",5.0);
+		
+		// TEST POST
+		Response response = _client
+				.target(WEB_SERVICE_URI+"/exercises").request().header("Content-Type", "application/json")
+				.post(Entity.json(run));
+		if (response.getStatus() != 201) {
+			fail("Failed to create new Exercise");
+		}
+	
+		String location = response.getLocation().toString();
+		response.close();
+		
+		// TEST GET
+		Exercise exFromService = null;
+		exFromService = _client.target(location).request().accept("application/json").get(Exercise.class);
+		assertEquals(run, exFromService);
+	}
 }

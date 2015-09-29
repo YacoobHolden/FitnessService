@@ -9,11 +9,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonTypeName;
+
 /*
  * DTO Class used to represent an exercise involving sets of weights
  */
 @XmlRootElement(name="weight_exercise")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonTypeName("weightDTO")
 public class WeightExercise extends Exercise{
 	
 	@XmlElementWrapper(name="reps")
