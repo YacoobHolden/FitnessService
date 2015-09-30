@@ -20,12 +20,12 @@ public class FitnessApplication extends Application
 
    public FitnessApplication()
    {
-	  // Register the ParoleeResource singleton to handle HTTP requests.
-	  FitnessResource resource = new FitnessResourceImpl();
-      singletons.add(resource);
+	  // Register the ParoleeResource class to handle HTTP requests.
+	  classes.add(FitnessResourceImpl.class);
       
       // Register the ContextResolver class for JAXB.
       classes.add(FitnessResolver.class);
+     
    }
 
    @Override
